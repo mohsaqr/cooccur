@@ -16,6 +16,8 @@
   : Convert to Nestimate netobject
 - [`as_tidygraph()`](https://saqr.me/cooccure/reference/as_tidygraph.md)
   : Convert to tidygraph
+- [`co_bootstrap()`](https://saqr.me/cooccure/reference/co_bootstrap.md)
+  : Bootstrap edge stability for a co-occurrence network
 - [`cooccurrence()`](https://saqr.me/cooccure/reference/cooccurrence.md)
   [`co()`](https://saqr.me/cooccure/reference/cooccurrence.md) : Build a
   co-occurrence network

@@ -16,6 +16,8 @@ cooccurrence(
   split_by = NULL,
   aggregate_by = NULL,
   aggregate = c("sum", "mean", "min", "max"),
+  keep_transactions = TRUE,
+  block = NULL,
   window = NULL,
   similarity = c("none", "jaccard", "cosine", "inclusion", "association", "dice",
     "equivalence", "relative"),
@@ -38,6 +40,8 @@ co(
   split_by = NULL,
   aggregate_by = NULL,
   aggregate = c("sum", "mean", "min", "max"),
+  keep_transactions = TRUE,
+  block = NULL,
   window = NULL,
   similarity = c("none", "jaccard", "cosine", "inclusion", "association", "dice",
     "equivalence", "relative"),
@@ -118,6 +122,18 @@ co(
   `aggregate_by` is used: `"sum"` (default), `"mean"`, `"min"`, or
   `"max"`. The `count` column is always summed. `threshold` and `top_n`
   are applied AFTER aggregation.
+
+- keep_transactions:
+
+  Logical. When `TRUE`, retain the integer-encoded post-`min_occur`
+  transaction data as attributes for confirmatory procedures such as
+  [`co_bootstrap`](https://saqr.me/cooccure/reference/co_bootstrap.md).
+
+- block:
+
+  Character column name or vector, or `NULL`. Optional block identifier
+  aligned to the input rows. Retained as `block_id` on the returned
+  object when `keep_transactions = TRUE`.
 
 - window:
 
