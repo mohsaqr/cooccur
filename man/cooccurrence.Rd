@@ -14,6 +14,8 @@ cooccurrence(
   split_by = NULL,
   aggregate_by = NULL,
   aggregate = c("sum", "mean", "min", "max"),
+  keep_transactions = TRUE,
+  block = NULL,
   window = NULL,
   similarity = c("none", "jaccard", "cosine", "inclusion", "association", "dice",
     "equivalence", "relative"),
@@ -36,6 +38,8 @@ co(
   split_by = NULL,
   aggregate_by = NULL,
   aggregate = c("sum", "mean", "min", "max"),
+  keep_transactions = TRUE,
+  block = NULL,
   window = NULL,
   similarity = c("none", "jaccard", "cosine", "inclusion", "association", "dice",
     "equivalence", "relative"),
@@ -99,6 +103,14 @@ groups when \code{aggregate_by} is used: \code{"sum"} (default),
 \code{"mean"}, \code{"min"}, or \code{"max"}. The \code{count}
 column is always summed. \code{threshold} and \code{top_n} are
 applied AFTER aggregation.}
+
+\item{keep_transactions}{Logical. When \code{TRUE}, retain the
+integer-encoded post-\code{min_occur} transaction data as attributes
+for confirmatory procedures such as \code{\link{co_bootstrap}}.}
+
+\item{block}{Character column name or vector, or \code{NULL}. Optional
+block identifier aligned to the input rows. Retained as \code{block_id}
+on the returned object when \code{keep_transactions = TRUE}.}
 
 \item{window}{Integer or \code{NULL}. Sliding-window size for
 categorical time-series / ordered-sequence input. When set to an

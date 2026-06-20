@@ -105,6 +105,12 @@
 #'   \code{"mean"}, \code{"min"}, or \code{"max"}. The \code{count}
 #'   column is always summed. \code{threshold} and \code{top_n} are
 #'   applied AFTER aggregation.
+#' @param keep_transactions Logical. When \code{TRUE}, retain the
+#'   integer-encoded post-\code{min_occur} transaction data as attributes
+#'   for confirmatory procedures such as \code{\link{co_bootstrap}}.
+#' @param block Character column name or vector, or \code{NULL}. Optional
+#'   block identifier aligned to the input rows. Retained as \code{block_id}
+#'   on the returned object when \code{keep_transactions = TRUE}.
 #' @param window Integer or \code{NULL}. Sliding-window size for
 #'   categorical time-series / ordered-sequence input. When set to an
 #'   integer \eqn{w \ge 2}, every window of \code{w} consecutive
@@ -188,6 +194,8 @@ cooccurrence <- function(data, field = NULL, by = NULL, sep = NULL,
                          split_by = NULL,
                          aggregate_by = NULL,
                          aggregate = c("sum", "mean", "min", "max"),
+                         keep_transactions = TRUE,
+                         block = NULL,
                          window = NULL,
                          similarity = c("none", "jaccard", "cosine",
                                         "inclusion", "association",
@@ -206,6 +214,8 @@ cooccurrence <- function(data, field = NULL, by = NULL, sep = NULL,
   threshold <- as.numeric(threshold)
   min_occur <- as.integer(min_occur)
   stopifnot(threshold >= 0, min_occur >= 1L)
+  stopifnot(is.logical(keep_transactions), length(keep_transactions) == 1L,
+            !is.na(keep_transactions))
   if (!is.null(window)) {
     stopifnot(is.numeric(window), length(window) == 1L, window >= 2L)
     window <- as.integer(window)
@@ -238,7 +248,8 @@ cooccurrence <- function(data, field = NULL, by = NULL, sep = NULL,
                  similarity = similarity, counting = counting,
                  scale_method = scale_method,
                  threshold = threshold, min_occur = min_occur,
-                 top_n = top_n, window = window, lambda = lambda),
+                 top_n = top_n, window = window, lambda = lambda,
+                 keep_transactions = FALSE, block = NULL),
         error = function(e) NULL
       )
       if (is.null(edges) || nrow(edges) == 0L) return(NULL)
@@ -276,7 +287,8 @@ cooccurrence <- function(data, field = NULL, by = NULL, sep = NULL,
                  similarity = similarity, counting = counting,
                  scale_method = scale_method,
                  threshold = 0, min_occur = min_occur,
-                 top_n = NULL, window = window, lambda = lambda),
+                 top_n = NULL, window = window, lambda = lambda,
+                 keep_transactions = FALSE, block = NULL),
         error = function(e) NULL
       )
     })
@@ -318,7 +330,8 @@ cooccurrence <- function(data, field = NULL, by = NULL, sep = NULL,
                      similarity = similarity, counting = counting,
                      scale_method = scale_method,
                      threshold = threshold, min_occur = min_occur,
-                     top_n = top_n, window = window, lambda = lambda)
+                     top_n = top_n, window = window, lambda = lambda,
+                     keep_transactions = keep_transactions, block = block)
 
   .co_format_output(result, output)
 }
@@ -334,7 +347,8 @@ co <- cooccurrence
 #' @noRd
 .co_core <- function(data, field, by, sep, weight_by = NULL, similarity,
                      counting, scale_method, threshold, min_occur, top_n,
-                     window = NULL, lambda = 1.0) {
+                     window = NULL, lambda = 1.0,
+                     keep_transactions = TRUE, block = NULL) {
   # Parse input
   fmt <- .co_detect_format(data, field, by, sep)
 
@@ -347,30 +361,14 @@ co <- cooccurrence
                              scale_method, threshold, min_occur, top_n))
   }
 
-  if (!is.null(window)) {
-    if (!fmt %in% c("wide", "list"))
-      stop("`window` only applies to ordered sequence formats: a list of ",
-           "vectors, or a wide data frame with field = \"all\".",
-           call. = FALSE)
-    transactions <- if (fmt == "wide") .co_parse_wide_windowed(data, window)
-                    else              .co_parse_list_windowed(data, window)
-  } else {
-    if (fmt == "field_only")
-      .co_warn_missing_sep(data, field)
-
-    transactions <- switch(fmt,
-      delimited       = .co_parse_delimited(data, field, sep),
-      multi_delimited = .co_parse_multi_delimited(data, field, sep),
-      field_only      = .co_parse_field_only(data, field),
-      long            = .co_parse_long(data, field, by),
-      binary          = .co_parse_binary(data),
-      wide            = .co_parse_wide(data),
-      list            = .co_parse_list(data)
-    )
-  }
+  parsed <- .co_parse_with_rows(data, fmt, field, by, sep, window)
+  transactions <- parsed$transactions
+  tx_rows <- parsed$rows
 
   # Drop empty transactions
-  transactions <- transactions[vapply(transactions, length, integer(1)) > 0L]
+  keep_tx <- vapply(transactions, length, integer(1)) > 0L
+  transactions <- transactions[keep_tx]
+  tx_rows <- tx_rows[keep_tx]
   if (length(transactions) == 0L)
     stop("No non-empty transactions found in the input data.", call. = FALSE)
 
@@ -379,7 +377,9 @@ co <- cooccurrence
     freq_table <- table(unlist(transactions))
     keep <- names(freq_table[freq_table >= min_occur])
     transactions <- lapply(transactions, function(t) t[t %in% keep])
-    transactions <- transactions[vapply(transactions, length, integer(1)) > 0L]
+    keep_tx <- vapply(transactions, length, integer(1)) > 0L
+    transactions <- transactions[keep_tx]
+    tx_rows <- tx_rows[keep_tx]
     if (length(transactions) == 0L)
       stop("No transactions remain after min_occur filtering.", call. = FALSE)
   }
@@ -406,8 +406,22 @@ co <- cooccurrence
   C <- Matrix::drop0(C)
   C_raw <- Matrix::drop0(C_raw)
 
-  .co_finalize(C, C_raw, freq, n_trans, n_items, items,
-               similarity, scale_method, threshold, min_occur, top_n)
+  result <- .co_finalize(C, C_raw, freq, n_trans, n_items, items,
+                         similarity, scale_method, threshold, min_occur,
+                         top_n)
+  attr(result, "counting") <- counting
+  attr(result, "lambda") <- lambda
+
+  if (keep_transactions) {
+    attr(result, "transactions") <- lapply(transactions, function(t) {
+      as.integer(match(t, items))
+    })
+    attr(result, "transaction_id") <- seq_len(n_trans)
+    attr(result, "block_id") <- .co_resolve_block_id(block, data, tx_rows,
+                                                     fmt, by)
+  }
+
+  result
 }
 
 
@@ -627,8 +641,11 @@ co <- cooccurrence
   C     <- Matrix::drop0(C)
   C_raw <- Matrix::drop0(C_raw)
 
-  .co_finalize(C, C_raw, freq, n_trans, n_items, all_items,
-               similarity, scale_method, threshold, min_occur, top_n)
+  result <- .co_finalize(C, C_raw, freq, n_trans, n_items, all_items,
+                         similarity, scale_method, threshold, min_occur,
+                         top_n)
+  attr(result, "counting") <- "weighted"
+  result
 }
 
 
@@ -757,6 +774,107 @@ co <- cooccurrence
 }
 
 # ---- Parsers ----
+
+#' Parse transactions and retain their source input rows.
+#'
+#' The row map is part of the confirmatory plumbing: empty transactions and
+#' post-min_occur drops must remove the matching block identifiers too.
+#' @noRd
+.co_parse_with_rows <- function(data, fmt, field, by, sep, window = NULL) {
+  if (!is.null(window)) {
+    if (!fmt %in% c("wide", "list"))
+      stop("`window` only applies to ordered sequence formats: a list of ",
+           "vectors, or a wide data frame with field = \"all\".",
+           call. = FALSE)
+    parsed <- if (fmt == "wide") {
+      .co_parse_wide_windowed_with_rows(data, window)
+    } else {
+      .co_parse_list_windowed_with_rows(data, window)
+    }
+    return(parsed)
+  }
+
+  if (fmt == "field_only")
+    .co_warn_missing_sep(data, field)
+
+  transactions <- switch(fmt,
+    delimited       = .co_parse_delimited(data, field, sep),
+    multi_delimited = .co_parse_multi_delimited(data, field, sep),
+    field_only      = .co_parse_field_only(data, field),
+    long            = .co_parse_long(data, field, by),
+    binary          = .co_parse_binary(data),
+    wide            = .co_parse_wide(data),
+    list            = .co_parse_list(data)
+  )
+
+  rows <- if (fmt == "long") {
+    groups <- split(seq_len(nrow(data)), data[[by]])
+    unname(lapply(groups, as.integer))
+  } else {
+    lapply(seq_along(transactions), function(i) as.integer(i))
+  }
+
+  list(transactions = transactions, rows = rows)
+}
+
+#' @noRd
+.co_parse_wide_windowed_with_rows <- function(data, window) {
+  mat <- if (is.data.frame(data)) as.matrix(data) else data
+  per_row <- lapply(seq_len(nrow(mat)),
+                    function(i) .co_window_one(mat[i, ], window))
+  lens <- lengths(per_row)
+  list(
+    transactions = do.call(c, per_row),
+    rows = lapply(rep.int(seq_along(per_row), lens), function(i) as.integer(i))
+  )
+}
+
+#' @noRd
+.co_parse_list_windowed_with_rows <- function(data, window) {
+  per_row <- lapply(data, .co_window_one, window = window)
+  lens <- lengths(per_row)
+  list(
+    transactions = do.call(c, per_row),
+    rows = lapply(rep.int(seq_along(per_row), lens), function(i) as.integer(i))
+  )
+}
+
+#' Resolve an optional user-supplied block identifier to transactions.
+#' @noRd
+.co_resolve_block_id <- function(block, data, tx_rows, fmt, by) {
+  if (is.null(block)) return(NULL)
+
+  n_trans <- length(tx_rows)
+  n_input <- if (is.data.frame(data) || is.matrix(data)) nrow(data) else length(data)
+
+  if (is.character(block) && length(block) == 1L &&
+      is.data.frame(data) && block %in% names(data)) {
+    block_values <- data[[block]]
+  } else {
+    block_values <- block
+  }
+
+  if (length(block_values) == n_trans) {
+    out <- block_values
+  } else if (length(block_values) == n_input) {
+    out <- vapply(tx_rows, function(rows) {
+      vals <- unique(block_values[rows])
+      vals <- vals[!is.na(vals)]
+      if (length(vals) != 1L)
+        stop("`block` must identify exactly one non-missing block per transaction.",
+             call. = FALSE)
+      as.character(vals)
+    }, character(1))
+  } else {
+    stop("`block` must be a column name, align to input rows, or align to transactions.",
+         call. = FALSE)
+  }
+
+  if (anyNA(out))
+    stop("`block` must not contain missing values for retained transactions.",
+         call. = FALSE)
+  as.character(out)
+}
 
 #' Rebuild a list of per-row character vectors from a flat token vector.
 #'
@@ -1134,7 +1252,9 @@ co <- cooccurrence
     # Copy attributes
     for (a in c("matrix", "raw_matrix", "items", "frequencies",
                 "similarity", "scale", "threshold", "min_occur",
-                "n_transactions", "n_items", "split_by", "groups")) {
+                "n_transactions", "n_items", "split_by", "groups",
+                "counting", "lambda", "transactions", "transaction_id",
+                "block_id")) {
       attr(out, a) <- attr(result, a)
     }
     return(out)
