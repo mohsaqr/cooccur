@@ -11,7 +11,7 @@ convention."><meta property="og:image" content="https://saqr.me/cooccure/logo.pn
 
     <a class="navbar-brand me-2" href="../index.html">cooccure</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -55,20 +55,26 @@ convention.</p>
 <span>  sep <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  weight_by <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  split_by <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  aggregate_by <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  aggregate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"sum"</span>, <span class="st">"mean"</span>, <span class="st">"min"</span>, <span class="st">"max"</span><span class="op">)</span>,</span>
-<span>  keep_transactions <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  block <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  window <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  similarity <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"jaccard"</span>, <span class="st">"cosine"</span>, <span class="st">"inclusion"</span>, <span class="st">"association"</span>, <span class="st">"dice"</span>,</span>
 <span>    <span class="st">"equivalence"</span>, <span class="st">"relative"</span><span class="op">)</span>,</span>
 <span>  counting <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"full"</span>, <span class="st">"fractional"</span>, <span class="st">"attention"</span><span class="op">)</span>,</span>
-<span>  lambda <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  scale <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  threshold <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  min_occur <span class="op">=</span> <span class="fl">1L</span>,</span>
 <span>  top_n <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  output <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"default"</span>, <span class="st">"gephi"</span>, <span class="st">"igraph"</span>, <span class="st">"cograph"</span>, <span class="st">"matrix"</span><span class="op">)</span>,</span>
+<span>  vars <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  actor <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  action <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  time <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  session <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  order <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  time_threshold <span class="op">=</span> <span class="fl">900</span>,</span>
+<span>  group <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  aggregate_by <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  aggregate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"sum"</span>, <span class="st">"mean"</span>, <span class="st">"min"</span>, <span class="st">"max"</span><span class="op">)</span>,</span>
+<span>  window <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  lambda <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -79,20 +85,26 @@ convention.</p>
 <span>  sep <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  weight_by <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  split_by <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  aggregate_by <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  aggregate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"sum"</span>, <span class="st">"mean"</span>, <span class="st">"min"</span>, <span class="st">"max"</span><span class="op">)</span>,</span>
-<span>  keep_transactions <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  block <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  window <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  similarity <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"jaccard"</span>, <span class="st">"cosine"</span>, <span class="st">"inclusion"</span>, <span class="st">"association"</span>, <span class="st">"dice"</span>,</span>
 <span>    <span class="st">"equivalence"</span>, <span class="st">"relative"</span><span class="op">)</span>,</span>
 <span>  counting <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"full"</span>, <span class="st">"fractional"</span>, <span class="st">"attention"</span><span class="op">)</span>,</span>
-<span>  lambda <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  scale <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  threshold <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  min_occur <span class="op">=</span> <span class="fl">1L</span>,</span>
 <span>  top_n <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  output <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"default"</span>, <span class="st">"gephi"</span>, <span class="st">"igraph"</span>, <span class="st">"cograph"</span>, <span class="st">"matrix"</span><span class="op">)</span>,</span>
+<span>  vars <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  actor <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  action <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  time <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  session <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  order <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  time_threshold <span class="op">=</span> <span class="fl">900</span>,</span>
+<span>  group <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  aggregate_by <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  aggregate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"sum"</span>, <span class="st">"mean"</span>, <span class="st">"min"</span>, <span class="st">"max"</span><span class="op">)</span>,</span>
+<span>  window <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  lambda <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -104,9 +116,15 @@ convention.</p>
 <dl><dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
 <dd><p>Input data. Accepts:</p><ul><li><p>A <code>data.frame</code> with a delimited column (<code>field</code> + <code>sep</code>).</p></li>
 <li><p>A <code>data.frame</code> in long/bipartite format (<code>field</code> + <code>by</code>).</p></li>
-<li><p>A binary (0/1) <code>data.frame</code> or <code>matrix</code> (auto-detected).</p></li>
+<li><p>A binary (0/1 or <code>TRUE</code>/<code>FALSE</code>) <code>data.frame</code> or
+<code>matrix</code> (auto-detected).</p></li>
+<li><p>A one-hot or count table with <code>vars</code> naming the indicator
+columns; other columns (ids, metadata) are ignored.</p></li>
 <li><p>A wide sequence <code>data.frame</code> or <code>matrix</code> (non-binary).</p></li>
 <li><p>A <code>list</code> of character vectors (each element is a transaction).</p></li>
+<li><p>A <code>nestimate_data</code> object from
+<code><a href="https://saqr.me/Nestimate/reference/prepare.html" class="external-link">Nestimate::prepare()</a></code>; its <code>sequence_data</code> is used, so
+event logs can be sessionised there and networked here.</p></li>
 </ul></dd>
 
 
@@ -144,48 +162,6 @@ models.</p></dd>
 by before computing co-occurrence. A separate network is computed per
 group and the results are combined into a single data frame with an
 additional <code>group</code> column. Only works with data.frame inputs.</p></dd>
-
-
-<dt id="arg-aggregate-by">aggregate_by<a class="anchor" aria-label="anchor" href="#arg-aggregate-by"></a></dt>
-<dd><p>Character or <code>NULL</code>. Column name to group
-the data by before computing co-occurrence. For each unique value,
-the per-group network is computed (with the chosen
-<code>similarity</code>, <code>counting</code>, <code>scale</code>, <code>window</code>);
-the per-group edge weights are then combined across groups via
-<code>aggregate</code> into ONE final network. Differs from
-<code>split_by</code>, which keeps groups separate. Cannot be combined
-with <code>split_by</code>. Only applies to data frame inputs.</p></dd>
-
-
-<dt id="arg-aggregate">aggregate<a class="anchor" aria-label="anchor" href="#arg-aggregate"></a></dt>
-<dd><p>Character. How to combine edge weights across
-groups when <code>aggregate_by</code> is used: <code>"sum"</code> (default),
-<code>"mean"</code>, <code>"min"</code>, or <code>"max"</code>. The <code>count</code>
-column is always summed. <code>threshold</code> and <code>top_n</code> are
-applied AFTER aggregation.</p></dd>
-
-
-<dt id="arg-keep-transactions">keep_transactions<a class="anchor" aria-label="anchor" href="#arg-keep-transactions"></a></dt>
-<dd><p>Logical. When <code>TRUE</code>, retain the
-integer-encoded post-<code>min_occur</code> transaction data as attributes
-for confirmatory procedures such as <code><a href="co_bootstrap.html">co_bootstrap</a></code>.</p></dd>
-
-
-<dt id="arg-block">block<a class="anchor" aria-label="anchor" href="#arg-block"></a></dt>
-<dd><p>Character column name or vector, or <code>NULL</code>. Optional
-block identifier aligned to the input rows. Retained as <code>block_id</code>
-on the returned object when <code>keep_transactions = TRUE</code>.</p></dd>
-
-
-<dt id="arg-window">window<a class="anchor" aria-label="anchor" href="#arg-window"></a></dt>
-<dd><p>Integer or <code>NULL</code>. Sliding-window size for
-categorical time-series / ordered-sequence input. When set to an
-integer \(w \ge 2\), every window of <code>w</code> consecutive
-positions in a sequence becomes a mini-transaction; states inside
-the same window co-occur. Sequences shorter than <code>w</code>
-contribute no transactions. Only applies to ordered formats:
-wide (<code>field = "all"</code>) and <code>list</code>. Default <code>NULL</code>
-(whole sequence treated as one transaction — bag of states).</p></dd>
 
 
 <dt id="arg-similarity">similarity<a class="anchor" aria-label="anchor" href="#arg-similarity"></a></dt>
@@ -245,13 +221,6 @@ input). The decay rate \(\lambda\) is controlled by the
 </dl></dd>
 
 
-<dt id="arg-lambda">lambda<a class="anchor" aria-label="anchor" href="#arg-lambda"></a></dt>
-<dd><p>Numeric. Decay rate for <code>counting = "attention"</code>.
-Higher <code>lambda</code> → slower decay → distant pairs still
-contribute. Default <code>1.0</code>, matching the <span class="pkg">tna</span> package.
-Ignored for other counting methods.</p></dd>
-
-
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
 <dd><p>Character or <code>NULL</code>. Optional scaling applied to weights
 after similarity normalization:</p><dl><dt><code>NULL</code> or <code>"none"</code></dt>
@@ -283,8 +252,11 @@ after similarity normalization:</p><dl><dt><code>NULL</code> or <code>"none"</co
 
 
 <dt id="arg-threshold">threshold<a class="anchor" aria-label="anchor" href="#arg-threshold"></a></dt>
-<dd><p>Numeric. Minimum edge weight to retain. Applied after
-similarity and scaling. Default 0.</p></dd>
+<dd><p>Numeric. Minimum edge weight to retain, applied after
+similarity and scaling. The default <code>0</code> means no filtering rather
+than "drop negative weights", so centring scalings such as
+<code>scale = "zscore"</code> keep their negative half. Pass a positive
+value to filter.</p></dd>
 
 
 <dt id="arg-min-occur">min_occur<a class="anchor" aria-label="anchor" href="#arg-min-occur"></a></dt>
@@ -317,6 +289,102 @@ Default <code>NULL</code> (all edges).</p></dd>
 
 
 </dl></dd>
+
+
+<dt id="arg-vars">vars<a class="anchor" aria-label="anchor" href="#arg-vars"></a></dt>
+<dd><p>Column specification or <code>NULL</code>. The indicator (one-hot)
+columns, one column per item. Resolved like <code>select</code> in
+<code><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></code>, so all of these work: a bare range
+(<code>vars = A:D</code>), bare names (<code>vars = c(A, B, C)</code>), positions
+(<code>vars = 2:5</code>), negative selection (<code>vars = -c(id, note)</code>),
+a logical mask, or a character vector. Every other column — ids,
+timestamps, metadata — is ignored, so a one-hot table that also
+carries identifier columns needs no pre-processing. Cell values are
+read as presence: any non-zero, non-<code>NA</code> value marks the item
+present, so count tables such as document-term matrices work as well
+as <code>0</code>/<code>1</code> and <code>TRUE</code>/<code>FALSE</code>. <code>NA</code> counts as
+absent. Cannot be combined with <code>field</code>, <code>by</code>, or
+<code>sep</code>. A purely binary table with no extra columns is still
+auto-detected without <code>vars</code>.</p></dd>
+
+
+<dt id="arg-actor">actor<a class="anchor" aria-label="anchor" href="#arg-actor"></a></dt>
+<dd><p>Character vector or <code>NULL</code>. Column(s) identifying who
+performed the action. When <code>NULL</code>, all rows are treated as one
+actor. Only used with <code>action</code>.</p></dd>
+
+
+<dt id="arg-action">action<a class="anchor" aria-label="anchor" href="#arg-action"></a></dt>
+<dd><p>Character or <code>NULL</code>. Column holding the event/state
+for raw event-log input. When supplied, the log is sessionised into
+ordered sequences first and each session becomes one transaction, so
+<code>window</code> and <code>counting = "attention"</code> apply. Requires the
+<span class="pkg">Nestimate</span> package, which performs the sessionisation.</p></dd>
+
+
+<dt id="arg-time">time<a class="anchor" aria-label="anchor" href="#arg-time"></a></dt>
+<dd><p>Character or <code>NULL</code>. Timestamp column. Accepts ISO8601,
+Unix time, and common date/time formats. When <code>NULL</code>, row order
+defines the sequence. Only used with <code>action</code>.</p></dd>
+
+
+<dt id="arg-session">session<a class="anchor" aria-label="anchor" href="#arg-session"></a></dt>
+<dd><p>Character vector or <code>NULL</code>. Column(s) giving an
+explicit session grouping. Combined with <code>time</code>, sessions are
+further split on time gaps. Only used with <code>action</code>.</p></dd>
+
+
+<dt id="arg-order">order<a class="anchor" aria-label="anchor" href="#arg-order"></a></dt>
+<dd><p>Character or <code>NULL</code>. Column used to break ties when
+timestamps are identical. Only used with <code>action</code>.</p></dd>
+
+
+<dt id="arg-time-threshold">time_threshold<a class="anchor" aria-label="anchor" href="#arg-time-threshold"></a></dt>
+<dd><p>Numeric. Maximum gap in seconds between consecutive
+events before a new session starts. Use <code>Inf</code> to keep each actor
+as a single sequence regardless of gaps. Default 900 (15 minutes).
+Only used with <code>action</code> and <code>time</code>.</p></dd>
+
+
+<dt id="arg-group">group<a class="anchor" aria-label="anchor" href="#arg-group"></a></dt>
+<dd><p>Character or <code>NULL</code>. Alias for <code>split_by</code>.</p></dd>
+
+
+<dt id="arg-aggregate-by">aggregate_by<a class="anchor" aria-label="anchor" href="#arg-aggregate-by"></a></dt>
+<dd><p>Character or <code>NULL</code>. Column name to group
+the data by before computing co-occurrence. For each unique value,
+the per-group network is computed (with the chosen
+<code>similarity</code>, <code>counting</code>, <code>scale</code>, <code>window</code>);
+the per-group edge weights are then combined across groups via
+<code>aggregate</code> into ONE final network. Differs from
+<code>split_by</code>, which keeps groups separate. Cannot be combined
+with <code>split_by</code>. Only applies to data frame inputs.</p></dd>
+
+
+<dt id="arg-aggregate">aggregate<a class="anchor" aria-label="anchor" href="#arg-aggregate"></a></dt>
+<dd><p>Character. How to combine edge weights across
+groups when <code>aggregate_by</code> is used: <code>"sum"</code> (default),
+<code>"mean"</code>, <code>"min"</code>, or <code>"max"</code>. The <code>count</code>
+column is always summed. <code>threshold</code> and <code>top_n</code> are
+applied AFTER aggregation.</p></dd>
+
+
+<dt id="arg-window">window<a class="anchor" aria-label="anchor" href="#arg-window"></a></dt>
+<dd><p>Integer or <code>NULL</code>. Sliding-window size for
+categorical time-series / ordered-sequence input. When set to an
+integer \(w \ge 2\), every window of <code>w</code> consecutive
+positions in a sequence becomes a mini-transaction; states inside
+the same window co-occur. Sequences shorter than <code>w</code>
+contribute no transactions. Only applies to ordered formats:
+wide (<code>field = "all"</code>) and <code>list</code>. Default <code>NULL</code>
+(whole sequence treated as one transaction — bag of states).</p></dd>
+
+
+<dt id="arg-lambda">lambda<a class="anchor" aria-label="anchor" href="#arg-lambda"></a></dt>
+<dd><p>Numeric. Decay rate for <code>counting = "attention"</code>.
+Higher <code>lambda</code> → slower decay → distant pairs still
+contribute. Default <code>1.0</code>, matching the <span class="pkg">tna</span> package.
+Ignored for other counting methods.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -354,7 +422,10 @@ the American Society for Information Science and Technology</em>, 60(8),
 <span class="r-in"><span>               <span class="st">"matrix; algebra"</span>, <span class="st">"network; algebra; graph"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">cooccurrence</span><span class="op">(</span><span class="va">df</span>, field <span class="op">=</span> <span class="st">"keywords"</span>, sep <span class="op">=</span> <span class="st">";"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> # cooccurrence: 4 nodes, 6 edges (4 transactions)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # cooccurrence: 4 nodes, 6 edges | density: 1.0000 | mean degree: 3.0000 | 4 transactions</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # similarity: none | counting: full</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # possible edges: 6 | isolates: 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # top nodes: graph(deg=3,str=5), network(deg=3,str=5), algebra(deg=3,str=3), matrix(deg=3,str=3)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     from      to weight count</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    graph network      3     3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  algebra   graph      1     1</span>
@@ -366,7 +437,23 @@ the American Society for Information Science and Technology</em>, 60(8),
 <span class="r-in"><span><span class="co"># Split by a grouping variable</span></span></span>
 <span class="r-in"><span><span class="va">df</span><span class="op">$</span><span class="va">year</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2020</span>, <span class="fl">2020</span>, <span class="fl">2021</span>, <span class="fl">2021</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">cooccurrence</span><span class="op">(</span><span class="va">df</span>, field <span class="op">=</span> <span class="st">"keywords"</span>, sep <span class="op">=</span> <span class="st">";"</span>, split_by <span class="op">=</span> <span class="st">"year"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> # cooccurrence: 4 nodes, 7 edges (2 transactions) | split_by: year (2 groups)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # cooccurrence: 4 nodes, 7 edges</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # split_by: year (2 groups)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # similarity: none | counting: full</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # isolates: 0 | per-group metrics: summary()</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     from      to weight count group</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    graph network      2     2  2020</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    graph  matrix      1     1  2020</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   matrix network      1     1  2020</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  algebra   graph      1     1  2021</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  algebra  matrix      1     1  2021</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  algebra network      1     1  2021</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    graph network      1     1  2021</span>
+<span class="r-in"><span><span class="fu">cooccurrence</span><span class="op">(</span><span class="va">df</span>, field <span class="op">=</span> <span class="st">"keywords"</span>, sep <span class="op">=</span> <span class="st">";"</span>, group <span class="op">=</span> <span class="st">"year"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # cooccurrence: 4 nodes, 7 edges</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # split_by: year (2 groups)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # similarity: none | counting: full</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # isolates: 0 | per-group metrics: summary()</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     from      to weight count group</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    graph network      2     2  2020</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    graph  matrix      1     1  2020</span>
@@ -379,7 +466,10 @@ the American Society for Information Science and Technology</em>, 60(8),
 <span class="r-in"><span><span class="co"># List of transactions with Jaccard similarity</span></span></span>
 <span class="r-in"><span><span class="fu">cooccurrence</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>,<span class="st">"B"</span>,<span class="st">"C"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"B"</span>,<span class="st">"C"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>,<span class="st">"C"</span><span class="op">)</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>             similarity <span class="op">=</span> <span class="st">"jaccard"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> # cooccurrence: 3 nodes, 3 edges (3 transactions) | similarity: jaccard</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # cooccurrence: 3 nodes, 3 edges | density: 1.0000 | mean degree: 2.0000 | 3 transactions</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # similarity: jaccard | counting: full</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # possible edges: 3 | isolates: 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # top nodes: C(deg=2,str=1.333), A(deg=2,str=1), B(deg=2,str=1)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  from to    weight count</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     A  C 0.6666667     2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     B  C 0.6666667     2</span>
@@ -387,7 +477,10 @@ the American Society for Information Science and Technology</em>, 60(8),
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Short alias</span></span></span>
 <span class="r-in"><span><span class="fu">co</span><span class="op">(</span><span class="va">df</span>, field <span class="op">=</span> <span class="st">"keywords"</span>, sep <span class="op">=</span> <span class="st">";"</span>, similarity <span class="op">=</span> <span class="st">"cosine"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> # cooccurrence: 4 nodes, 6 edges (4 transactions) | similarity: cosine</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # cooccurrence: 4 nodes, 6 edges | density: 1.0000 | mean degree: 3.0000 | 4 transactions</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # similarity: cosine | counting: full</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # possible edges: 6 | isolates: 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # top nodes: graph(deg=3,str=1.816), network(deg=3,str=1.816), algebra(deg=3,str=1.316), matrix(deg=3,str=1.316)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     from      to    weight count</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    graph network 1.0000000     3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  algebra  matrix 0.5000000     1</span>
@@ -404,7 +497,10 @@ the American Society for Information Science and Technology</em>, 60(8),
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"focus"</span>, <span class="st">"distract"</span>, <span class="st">"distract"</span>, <span class="st">"focus"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">cooccurrence</span><span class="op">(</span><span class="va">seqs</span>, window <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> # cooccurrence: 3 nodes, 2 edges (7 transactions)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # cooccurrence: 3 nodes, 2 edges | density: 0.6667 | mean degree: 1.3333 | 7 transactions</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # similarity: none | counting: full</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # possible edges: 3 | isolates: 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # top nodes: focus(deg=2,str=5), distract(deg=1,str=4), confused(deg=1,str=1)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      from    to weight count</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  distract focus      4     4</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  confused focus      1     1</span>
@@ -416,11 +512,49 @@ the American Society for Information Science and Technology</em>, 60(8),
 <span class="r-in"><span>  prob  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.6</span>, <span class="fl">0.3</span>, <span class="fl">0.1</span>, <span class="fl">0.4</span>, <span class="fl">0.6</span>, <span class="fl">0.5</span>, <span class="fl">0.5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">cooccurrence</span><span class="op">(</span><span class="va">theta</span>, field <span class="op">=</span> <span class="st">"topic"</span>, by <span class="op">=</span> <span class="st">"doc"</span>, weight_by <span class="op">=</span> <span class="st">"prob"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> # cooccurrence: 3 nodes, 3 edges (3 transactions)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # cooccurrence: 3 nodes, 3 edges | density: 1.0000 | mean degree: 2.0000 | 3 transactions</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # similarity: none | counting: weighted</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # possible edges: 3 | isolates: 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # top nodes: T3(deg=2,str=0.58), T1(deg=2,str=0.48), T2(deg=2,str=0.46)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  from to weight count</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    T1 T3   0.30     2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    T2 T3   0.28     2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    T1 T2   0.18     1</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># One-hot / indicator table: name the indicator columns, ignore the rest</span></span></span>
+<span class="r-in"><span><span class="va">onehot</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  doc <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"d1"</span>, <span class="st">"d2"</span>, <span class="st">"d3"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  A <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, B <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span>, C <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">cooccurrence</span><span class="op">(</span><span class="va">onehot</span>, vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"C"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # cooccurrence: 3 nodes, 3 edges | density: 1.0000 | mean degree: 2.0000 | 3 transactions</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # similarity: none | counting: full</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # possible edges: 3 | isolates: 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # top nodes: A(deg=2,str=2), B(deg=2,str=2), C(deg=2,str=2)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  from to weight count</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     A  B      1     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     A  C      1     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     B  C      1     1</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Raw event log: sessionised on a 15-minute gap, then windowed</span></span></span>
+<span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"Nestimate"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="va">events</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    student <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"s1"</span>, <span class="st">"s2"</span><span class="op">)</span>, each <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    code    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"read"</span>, <span class="st">"write"</span>, <span class="st">"read"</span>, <span class="st">"test"</span>, <span class="st">"write"</span>, <span class="st">"read"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    stamp   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.POSIXlt.html" class="external-link">as.POSIXct</a></span><span class="op">(</span><span class="st">"2026-01-01 09:00:00"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">60</span>, <span class="fl">120</span>, <span class="fl">0</span>, <span class="fl">30</span>, <span class="fl">90</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu">cooccurrence</span><span class="op">(</span><span class="va">events</span>, actor <span class="op">=</span> <span class="st">"student"</span>, action <span class="op">=</span> <span class="st">"code"</span>, time <span class="op">=</span> <span class="st">"stamp"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # cooccurrence: 3 nodes, 3 edges | density: 1.0000 | mean degree: 2.0000 | 2 transactions</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # similarity: none | counting: full</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # possible edges: 3 | isolates: 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # top nodes: read(deg=2,str=3), write(deg=2,str=3), test(deg=2,str=2)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  from    to weight count</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  read write      2     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  read  test      1     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  test write      1     1</span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
@@ -433,7 +567,7 @@ the American Society for Information Science and Technology</em>, 60(8),
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer></div>

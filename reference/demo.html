@@ -11,7 +11,7 @@ Use field = "actor" with by = "movie" or by = "genre".'><meta property="og:image
 
     <a class="navbar-brand me-2" href="../index.html">cooccure</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,7 +76,10 @@ Use <code>field = "actor"</code> with <code>by = "movie"</code> or <code>by = "g
 <span class="r-out co"><span class="r-pr">#&gt;</span> 5    Goodfellas Robert De Niro Crime</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 6    Goodfellas     Ray Liotta Crime</span>
 <span class="r-in"><span><span class="fu"><a href="cooccurrence.html">cooccurrence</a></span><span class="op">(</span><span class="va">demo</span>, field <span class="op">=</span> <span class="st">"actor"</span>, by <span class="op">=</span> <span class="st">"movie"</span>, similarity <span class="op">=</span> <span class="st">"jaccard"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> # cooccurrence: 30 nodes, 43 edges (10 transactions) | similarity: jaccard</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # cooccurrence: 30 nodes, 43 edges | density: 0.0989 | mean degree: 2.8667 | 10 transactions</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # similarity: jaccard | counting: full</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # possible edges: 435 | isolates: 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # top nodes: Al Pacino(deg=6,str=2.833), Robert De Niro(deg=6,str=2.833), Leonardo DiCaprio(deg=5,str=2.333), Michael Caine(deg=4,str=1.833), Bruce Willis(deg=3,str=3)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>            from                   to weight count</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       Brad Pitt        Edward Norton      1     1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Christian Bale         Heath Ledger      1     1</span>
@@ -100,7 +103,7 @@ Use <code>field = "actor"</code> with <code>by = "movie"</code> or <code>by = "g
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer></div>

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">cooccure</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,13 +36,48 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.1.2" id="cooccure-012">cooccure 0.1.2<a class="anchor" aria-label="anchor" href="#cooccure-012"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.2.0" id="cooccure-020">cooccure 0.2.0<a class="anchor" aria-label="anchor" href="#cooccure-020"></a></h2>
 <ul><li>
 <code><a href="../reference/cooccurrence.html">cooccurrence()</a></code> gains a <code>window =</code> parameter for sliding-window co-occurrence on ordered sequence input (lists of vectors and wide TraMineR-style data frames via <code>field = "all"</code>). Each window of <code>w</code> consecutive positions becomes one transaction; states inside the same window co-occur. <code>window = sequence_length</code> reduces to the existing bag-of-states behaviour. TraMineR void markers (<code>NA</code>, <code>""</code>, <code>"%"</code>, <code>"*"</code>, <code>"NaN"</code>) are dropped before windowing. Pure base R via <code><a href="https://rdrr.io/r/stats/embed.html" class="external-link">embed()</a></code>.</li>
 <li>
 <code><a href="../reference/cooccurrence.html">cooccurrence()</a></code> gains <code>aggregate_by =</code> and <code>aggregate =</code> parameters. <code>aggregate_by</code> groups the data by a column (e.g. journal id), computes the per-group co-occurrence network with whatever <code>similarity</code> / <code>counting</code> / <code>scale</code> / <code>window</code> was chosen, then combines the per-group edge weights into ONE final network. <code>aggregate = c("sum", "mean", "min", "max")</code> controls the combiner; <code>count</code> is always summed. Differs from <code>split_by</code>, which keeps groups separate. Cannot be combined with <code>split_by</code>. <code>threshold</code> and <code>top_n</code> apply after aggregation.</li>
 <li>
 <code>counting = "attention"</code> adds positional gap-decay weighting: each pair within an ordered transaction contributes <code>exp(-|pos_i - pos_j| / lambda)</code> to the edge. Closer positions give a stronger edge, distant pairs decay. Matches the <code>tna::build_model(type = "attention")</code> semantics, undirected. The new <code>lambda =</code> parameter (default <code>1.0</code>) controls the decay rate.</li>
+<li>
+<code>group =</code> is now accepted as an alias for <code>split_by =</code>.</li>
+<li>
+<code><a href="../reference/summary.cooccurrence.html">summary.cooccurrence()</a></code> now returns a structured summary object with network size, density, mean degree, isolates, node-level degree and strength, and optional group-level summaries.</li>
+<li>
+<code><a href="../reference/print.cooccurrence.html">print.cooccurrence()</a></code> now shows a compact diagnostic header before the edge preview, including density, mean degree, isolates, method metadata, and top nodes.</li>
+<li>
+<code>plot.cooccurrence(type = "degree")</code> adds a base R degree-distribution plot.</li>
+<li>
+<code><a href="../reference/cooccurrence.html">cooccurrence()</a></code> accepts a raw event log directly via <code>action =</code> (the event column), with optional <code>actor =</code>, <code>time =</code>, <code>session =</code>, <code>order =</code>, and <code>time_threshold =</code> (default 900 seconds). The log is sessionised into ordered sequences and each session becomes one transaction, so <code>window =</code> and <code>counting = "attention"</code> apply. Sessionisation — timestamp parsing and gap splitting — is delegated to <code><a href="https://saqr.me/Nestimate/reference/prepare.html" class="external-link">Nestimate::prepare()</a></code> rather than reimplemented, so <code>Nestimate</code> is required for this input only.</li>
+<li>
+<code><a href="../reference/cooccurrence.html">cooccurrence()</a></code> gains <code>vars =</code>, naming the indicator (one-hot) columns directly. The specification is resolved like <code>select</code> in base <code><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset()</a></code>, so a bare range (<code>vars = A:D</code>), bare names (<code>vars = c(A, B, C)</code>), positions (<code>vars = 2:5</code>), negative selection (<code>vars = -c(id, note)</code>), a logical mask, and a plain character vector all work. Other columns — ids, timestamps, metadata — are ignored, so a one-hot table no longer has to be stripped down to a bare matrix first. Cell values are read as presence, so count tables such as document-term matrices work alongside <code>0</code>/<code>1</code> and <code>TRUE</code>/<code>FALSE</code>.</li>
+<li>Logical (<code>TRUE</code>/<code>FALSE</code>) indicator tables are now auto-detected; previously only numeric <code>0</code>/<code>1</code> was recognised.</li>
+<li>
+<code>NA</code> in an indicator table is treated as absent. It previously reached <code><a href="https://rdrr.io/pkg/Matrix/man/sparseMatrix.html" class="external-link">Matrix::sparseMatrix()</a></code> as an <code>NA</code> index and failed with an internal error.</li>
+<li>
+<code><a href="../reference/cooccurrence.html">cooccurrence()</a></code> accepts a <code>nestimate_data</code> object from <code><a href="https://saqr.me/Nestimate/reference/prepare.html" class="external-link">Nestimate::prepare()</a></code> and uses its <code>sequence_data</code>, so event logs can be sessionised by <code>prepare()</code> (time gaps, timestamp parsing) and networked here without duplicating that logic. Passing one used to fall into the list-of-transactions branch and silently produce items built from the object’s internal components.</li>
+<li>Bug fix: unknown arguments were silently swallowed by <code>...</code>, so a typo such as <code>simliarity = "jaccard"</code> returned raw counts with no warning. Unknown or unnamed arguments now raise an error.</li>
+<li>
+<code><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame()</a></code> on a <code>summary.cooccurrence</code> object returns tidy node-level metrics (<code>what = "nodes"</code>, the default) or group-level metrics (<code>what = "groups"</code>), so callers no longer reach into the summary object’s internals.</li>
+<li>Bug fix: <code>weight_by</code> combined with <code>min_occur &gt; 1</code> errored with “‘dims’ must contain all (i,j) pairs”. The binary companion matrix was built from unfiltered column indices against filtered dimensions.</li>
+<li>Bug fix: <code>min_occur</code> support for weighted input counted rows rather than distinct documents, so duplicate rows for one document could keep an item that appears in only that document.</li>
+<li>Bug fix: <code>threshold</code> and <code>top_n</code> filtered the edge list but not the stored matrix, so <code><a href="../reference/as_matrix.html">as_matrix()</a></code>, the heatmap, and the cograph and netobject converters disagreed with the printed edges (<code>top_n = 1</code> returned one edge but a three-edge matrix). The matrix is now rebuilt from the surviving edges.</li>
+<li>Bug fix: with <code>counting = "attention"</code>, a window covering the whole sequence did not reproduce the unwindowed result. <code><a href="https://rdrr.io/r/stats/embed.html" class="external-link">embed()</a></code> emits each window most-recent-first, and attention reads positional gaps off the transaction, so the decay was mirrored. Windows are restored to reading order before deduplication; set-based counting is unaffected.</li>
+<li>
+<code><a href="../reference/as_igraph.html">as_igraph()</a></code> and <code><a href="../reference/as_matrix.html">as_matrix()</a></code> now accept <code>output = "gephi"</code> objects, whose columns are named <code>Source</code>/<code>Target</code>/<code>Weight</code>/<code>Count</code>. They previously failed with “undefined columns selected”.</li>
+<li>A group that fails during <code>split_by</code> now warns and names the group. Genuinely edgeless groups are still dropped quietly.</li>
+<li>
+<code>threshold = 0</code> is documented as meaning no filtering rather than “drop negative weights”, so centring scalings such as <code>scale = "zscore"</code> keep their negative half.</li>
+<li>Bug fix: the argument order now reproduces the CRAN 0.1.1 signature for its first thirteen arguments, so positional calls written against 0.1.1 keep their meaning. Arguments added in 0.1.2 (<code>vars</code>, the event-log arguments, <code>group</code>, <code>aggregate_by</code>, <code>aggregate</code>, <code>window</code>, <code>lambda</code>) follow them.</li>
+<li>Bug fix: a column repeated in <code>vars</code> was counted twice by the sparse builder, inflating weight and count for every pair involving it. Selected columns are now deduplicated.</li>
+<li>Bug fix: a <code>split_by</code> result inherited the FIRST group’s <code>matrix</code>, <code>items</code>, <code>frequencies</code>, and <code>n_transactions</code> attributes from <code><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind()</a></code>, so <code><a href="../reference/as_matrix.html">as_matrix()</a></code> and the other converters silently described only that group. Those attributes are now dropped from split results, and <code><a href="../reference/as_matrix.html">as_matrix()</a></code> rebuilds from the full edge list. Per-group support is recorded in the new <code>group_items</code> and <code>group_transactions</code> attributes.</li>
+<li>Bug fix: the <code>groups</code> attribute of a <code>split_by</code> result listed every input level, including groups that produced no edges and were dropped from the data. It now lists only the groups present.</li>
+<li>Bug fix: per-group density in <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> counted only nodes that appear in an edge, so a group containing an isolated node reported a density above its true value (a group with edge <code>A-B</code> plus isolated <code>C</code> reported density 1 instead of 1/3).</li>
+<li>Bug fix: <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> and <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> reported pooled simple-graph metrics for <code>split_by</code> results, where a node pair can occur once per group. Density could exceed 1 and node degree could exceed <code>n_nodes - 1</code>. <code>density</code>, <code>mean_degree</code>, and <code>possible_edges</code> are now <code>NA</code> for split results, and the per-group table reports the correct values.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.1" id="cooccure-011">cooccure 0.1.1<a class="anchor" aria-label="anchor" href="#cooccure-011"></a></h2><p class="text-muted">CRAN release: 2026-04-24</p>
@@ -82,7 +117,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer></div>

@@ -9,12 +9,12 @@
 <url><loc>https://saqr.me/cooccure/news/index.html</loc></url>
 <url><loc>https://saqr.me/cooccure/reference/actor_genres.html</loc></url>
 <url><loc>https://saqr.me/cooccure/reference/actors.html</loc></url>
+<url><loc>https://saqr.me/cooccure/reference/as.data.frame.summary.cooccurrence.html</loc></url>
 <url><loc>https://saqr.me/cooccure/reference/as_cograph.html</loc></url>
 <url><loc>https://saqr.me/cooccure/reference/as_igraph.html</loc></url>
 <url><loc>https://saqr.me/cooccure/reference/as_matrix.html</loc></url>
 <url><loc>https://saqr.me/cooccure/reference/as_netobject.html</loc></url>
 <url><loc>https://saqr.me/cooccure/reference/as_tidygraph.html</loc></url>
-<url><loc>https://saqr.me/cooccure/reference/co_bootstrap.html</loc></url>
 <url><loc>https://saqr.me/cooccure/reference/cooccurrence.html</loc></url>
 <url><loc>https://saqr.me/cooccure/reference/demo.html</loc></url>
 <url><loc>https://saqr.me/cooccure/reference/index.html</loc></url>
@@ -22,6 +22,7 @@
 <url><loc>https://saqr.me/cooccure/reference/movies.html</loc></url>
 <url><loc>https://saqr.me/cooccure/reference/plot.cooccurrence.html</loc></url>
 <url><loc>https://saqr.me/cooccure/reference/print.cooccurrence.html</loc></url>
+<url><loc>https://saqr.me/cooccure/reference/print.summary.cooccurrence.html</loc></url>
 <url><loc>https://saqr.me/cooccure/reference/summary.cooccurrence.html</loc></url>
 </urlset>
 

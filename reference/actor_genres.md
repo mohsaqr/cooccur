@@ -41,7 +41,10 @@ head(actor_genres)
 #> 5 Larry Clemmons Animation
 #> 6 Larry Clemmons    Comedy
 cooccurrence(actor_genres, field = "actor", by = "genre", similarity = "jaccard")
-#> # cooccurrence: 624 nodes, 172390 edges (20 transactions) | similarity: jaccard
+#> # cooccurrence: 624 nodes, 172390 edges | density: 0.8869 | mean degree: 552.5321 | 20 transactions
+#> # similarity: jaccard | counting: full
+#> # possible edges: 194376 | isolates: 0
+#> # top nodes: Babu Pathak(deg=623,str=240.1), Sheila Allen(deg=623,str=240.1), Stacey Pickren(deg=623,str=240.1), Armando Pizzuti(deg=623,str=236.2), Shameer Muhammed(deg=623,str=236.2)
 #>            from               to weight count
 #>      Adam Brown      Adnan Ghani      1     4
 #>      Adam Brown   Akimasa Ohmori      1     4

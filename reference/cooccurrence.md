@@ -14,20 +14,26 @@ cooccurrence(
   sep = NULL,
   weight_by = NULL,
   split_by = NULL,
-  aggregate_by = NULL,
-  aggregate = c("sum", "mean", "min", "max"),
-  keep_transactions = TRUE,
-  block = NULL,
-  window = NULL,
   similarity = c("none", "jaccard", "cosine", "inclusion", "association", "dice",
     "equivalence", "relative"),
   counting = c("full", "fractional", "attention"),
-  lambda = 1,
   scale = NULL,
   threshold = 0,
   min_occur = 1L,
   top_n = NULL,
   output = c("default", "gephi", "igraph", "cograph", "matrix"),
+  vars = NULL,
+  actor = NULL,
+  action = NULL,
+  time = NULL,
+  session = NULL,
+  order = NULL,
+  time_threshold = 900,
+  group = NULL,
+  aggregate_by = NULL,
+  aggregate = c("sum", "mean", "min", "max"),
+  window = NULL,
+  lambda = 1,
   ...
 )
 
@@ -38,20 +44,26 @@ co(
   sep = NULL,
   weight_by = NULL,
   split_by = NULL,
-  aggregate_by = NULL,
-  aggregate = c("sum", "mean", "min", "max"),
-  keep_transactions = TRUE,
-  block = NULL,
-  window = NULL,
   similarity = c("none", "jaccard", "cosine", "inclusion", "association", "dice",
     "equivalence", "relative"),
   counting = c("full", "fractional", "attention"),
-  lambda = 1,
   scale = NULL,
   threshold = 0,
   min_occur = 1L,
   top_n = NULL,
   output = c("default", "gephi", "igraph", "cograph", "matrix"),
+  vars = NULL,
+  actor = NULL,
+  action = NULL,
+  time = NULL,
+  session = NULL,
+  order = NULL,
+  time_threshold = 900,
+  group = NULL,
+  aggregate_by = NULL,
+  aggregate = c("sum", "mean", "min", "max"),
+  window = NULL,
+  lambda = 1,
   ...
 )
 ```
@@ -66,11 +78,20 @@ co(
 
   - A `data.frame` in long/bipartite format (`field` + `by`).
 
-  - A binary (0/1) `data.frame` or `matrix` (auto-detected).
+  - A binary (0/1 or `TRUE`/`FALSE`) `data.frame` or `matrix`
+    (auto-detected).
+
+  - A one-hot or count table with `vars` naming the indicator columns;
+    other columns (ids, metadata) are ignored.
 
   - A wide sequence `data.frame` or `matrix` (non-binary).
 
   - A `list` of character vectors (each element is a transaction).
+
+  - A `nestimate_data` object from
+    [`Nestimate::prepare()`](https://saqr.me/Nestimate/reference/prepare.html);
+    its `sequence_data` is used, so event logs can be sessionised there
+    and networked here.
 
 - field:
 
@@ -105,45 +126,6 @@ co(
   co-occurrence. A separate network is computed per group and the
   results are combined into a single data frame with an additional
   `group` column. Only works with data.frame inputs.
-
-- aggregate_by:
-
-  Character or `NULL`. Column name to group the data by before computing
-  co-occurrence. For each unique value, the per-group network is
-  computed (with the chosen `similarity`, `counting`, `scale`,
-  `window`); the per-group edge weights are then combined across groups
-  via `aggregate` into ONE final network. Differs from `split_by`, which
-  keeps groups separate. Cannot be combined with `split_by`. Only
-  applies to data frame inputs.
-
-- aggregate:
-
-  Character. How to combine edge weights across groups when
-  `aggregate_by` is used: `"sum"` (default), `"mean"`, `"min"`, or
-  `"max"`. The `count` column is always summed. `threshold` and `top_n`
-  are applied AFTER aggregation.
-
-- keep_transactions:
-
-  Logical. When `TRUE`, retain the integer-encoded post-`min_occur`
-  transaction data as attributes for confirmatory procedures such as
-  [`co_bootstrap`](https://saqr.me/cooccure/reference/co_bootstrap.md).
-
-- block:
-
-  Character column name or vector, or `NULL`. Optional block identifier
-  aligned to the input rows. Retained as `block_id` on the returned
-  object when `keep_transactions = TRUE`.
-
-- window:
-
-  Integer or `NULL`. Sliding-window size for categorical time-series /
-  ordered-sequence input. When set to an integer \\w \ge 2\\, every
-  window of `w` consecutive positions in a sequence becomes a
-  mini-transaction; states inside the same window co-occur. Sequences
-  shorter than `w` contribute no transactions. Only applies to ordered
-  formats: wide (`field = "all"`) and `list`. Default `NULL` (whole
-  sequence treated as one transaction — bag of states).
 
 - similarity:
 
@@ -205,12 +187,6 @@ co(
       delimited / windowed input). The decay rate \\\lambda\\ is
       controlled by the `lambda` argument.
 
-- lambda:
-
-  Numeric. Decay rate for `counting = "attention"`. Higher `lambda` →
-  slower decay → distant pairs still contribute. Default `1.0`, matching
-  the tna package. Ignored for other counting methods.
-
 - scale:
 
   Character or `NULL`. Optional scaling applied to weights after
@@ -250,8 +226,10 @@ co(
 
 - threshold:
 
-  Numeric. Minimum edge weight to retain. Applied after similarity and
-  scaling. Default 0.
+  Numeric. Minimum edge weight to retain, applied after similarity and
+  scaling. The default `0` means no filtering rather than "drop negative
+  weights", so centring scalings such as `scale = "zscore"` keep their
+  negative half. Pass a positive value to filter.
 
 - min_occur:
 
@@ -287,6 +265,97 @@ co(
   `"matrix"`
 
   :   Returns the square co-occurrence matrix.
+
+- vars:
+
+  Column specification or `NULL`. The indicator (one-hot) columns, one
+  column per item. Resolved like `select` in
+  [`subset`](https://rdrr.io/r/base/subset.html), so all of these work:
+  a bare range (`vars = A:D`), bare names (`vars = c(A, B, C)`),
+  positions (`vars = 2:5`), negative selection (`vars = -c(id, note)`),
+  a logical mask, or a character vector. Every other column — ids,
+  timestamps, metadata — is ignored, so a one-hot table that also
+  carries identifier columns needs no pre-processing. Cell values are
+  read as presence: any non-zero, non-`NA` value marks the item present,
+  so count tables such as document-term matrices work as well as `0`/`1`
+  and `TRUE`/`FALSE`. `NA` counts as absent. Cannot be combined with
+  `field`, `by`, or `sep`. A purely binary table with no extra columns
+  is still auto-detected without `vars`.
+
+- actor:
+
+  Character vector or `NULL`. Column(s) identifying who performed the
+  action. When `NULL`, all rows are treated as one actor. Only used with
+  `action`.
+
+- action:
+
+  Character or `NULL`. Column holding the event/state for raw event-log
+  input. When supplied, the log is sessionised into ordered sequences
+  first and each session becomes one transaction, so `window` and
+  `counting = "attention"` apply. Requires the Nestimate package, which
+  performs the sessionisation.
+
+- time:
+
+  Character or `NULL`. Timestamp column. Accepts ISO8601, Unix time, and
+  common date/time formats. When `NULL`, row order defines the sequence.
+  Only used with `action`.
+
+- session:
+
+  Character vector or `NULL`. Column(s) giving an explicit session
+  grouping. Combined with `time`, sessions are further split on time
+  gaps. Only used with `action`.
+
+- order:
+
+  Character or `NULL`. Column used to break ties when timestamps are
+  identical. Only used with `action`.
+
+- time_threshold:
+
+  Numeric. Maximum gap in seconds between consecutive events before a
+  new session starts. Use `Inf` to keep each actor as a single sequence
+  regardless of gaps. Default 900 (15 minutes). Only used with `action`
+  and `time`.
+
+- group:
+
+  Character or `NULL`. Alias for `split_by`.
+
+- aggregate_by:
+
+  Character or `NULL`. Column name to group the data by before computing
+  co-occurrence. For each unique value, the per-group network is
+  computed (with the chosen `similarity`, `counting`, `scale`,
+  `window`); the per-group edge weights are then combined across groups
+  via `aggregate` into ONE final network. Differs from `split_by`, which
+  keeps groups separate. Cannot be combined with `split_by`. Only
+  applies to data frame inputs.
+
+- aggregate:
+
+  Character. How to combine edge weights across groups when
+  `aggregate_by` is used: `"sum"` (default), `"mean"`, `"min"`, or
+  `"max"`. The `count` column is always summed. `threshold` and `top_n`
+  are applied AFTER aggregation.
+
+- window:
+
+  Integer or `NULL`. Sliding-window size for categorical time-series /
+  ordered-sequence input. When set to an integer \\w \ge 2\\, every
+  window of `w` consecutive positions in a sequence becomes a
+  mini-transaction; states inside the same window co-occur. Sequences
+  shorter than `w` contribute no transactions. Only applies to ordered
+  formats: wide (`field = "all"`) and `list`. Default `NULL` (whole
+  sequence treated as one transaction — bag of states).
+
+- lambda:
+
+  Numeric. Decay rate for `counting = "attention"`. Higher `lambda` →
+  slower decay → distant pairs still contribute. Default `1.0`, matching
+  the tna package. Ignored for other counting methods.
 
 - ...:
 
@@ -328,7 +397,10 @@ df <- data.frame(
                "matrix; algebra", "network; algebra; graph")
 )
 cooccurrence(df, field = "keywords", sep = ";")
-#> # cooccurrence: 4 nodes, 6 edges (4 transactions)
+#> # cooccurrence: 4 nodes, 6 edges | density: 1.0000 | mean degree: 3.0000 | 4 transactions
+#> # similarity: none | counting: full
+#> # possible edges: 6 | isolates: 0
+#> # top nodes: graph(deg=3,str=5), network(deg=3,str=5), algebra(deg=3,str=3), matrix(deg=3,str=3)
 #>     from      to weight count
 #>    graph network      3     3
 #>  algebra   graph      1     1
@@ -340,7 +412,23 @@ cooccurrence(df, field = "keywords", sep = ";")
 # Split by a grouping variable
 df$year <- c(2020, 2020, 2021, 2021)
 cooccurrence(df, field = "keywords", sep = ";", split_by = "year")
-#> # cooccurrence: 4 nodes, 7 edges (2 transactions) | split_by: year (2 groups)
+#> # cooccurrence: 4 nodes, 7 edges
+#> # split_by: year (2 groups)
+#> # similarity: none | counting: full
+#> # isolates: 0 | per-group metrics: summary()
+#>     from      to weight count group
+#>    graph network      2     2  2020
+#>    graph  matrix      1     1  2020
+#>   matrix network      1     1  2020
+#>  algebra   graph      1     1  2021
+#>  algebra  matrix      1     1  2021
+#>  algebra network      1     1  2021
+#>    graph network      1     1  2021
+cooccurrence(df, field = "keywords", sep = ";", group = "year")
+#> # cooccurrence: 4 nodes, 7 edges
+#> # split_by: year (2 groups)
+#> # similarity: none | counting: full
+#> # isolates: 0 | per-group metrics: summary()
 #>     from      to weight count group
 #>    graph network      2     2  2020
 #>    graph  matrix      1     1  2020
@@ -353,7 +441,10 @@ cooccurrence(df, field = "keywords", sep = ";", split_by = "year")
 # List of transactions with Jaccard similarity
 cooccurrence(list(c("A","B","C"), c("B","C"), c("A","C")),
              similarity = "jaccard")
-#> # cooccurrence: 3 nodes, 3 edges (3 transactions) | similarity: jaccard
+#> # cooccurrence: 3 nodes, 3 edges | density: 1.0000 | mean degree: 2.0000 | 3 transactions
+#> # similarity: jaccard | counting: full
+#> # possible edges: 3 | isolates: 0
+#> # top nodes: C(deg=2,str=1.333), A(deg=2,str=1), B(deg=2,str=1)
 #>  from to    weight count
 #>     A  C 0.6666667     2
 #>     B  C 0.6666667     2
@@ -361,7 +452,10 @@ cooccurrence(list(c("A","B","C"), c("B","C"), c("A","C")),
 
 # Short alias
 co(df, field = "keywords", sep = ";", similarity = "cosine")
-#> # cooccurrence: 4 nodes, 6 edges (4 transactions) | similarity: cosine
+#> # cooccurrence: 4 nodes, 6 edges | density: 1.0000 | mean degree: 3.0000 | 4 transactions
+#> # similarity: cosine | counting: full
+#> # possible edges: 6 | isolates: 0
+#> # top nodes: graph(deg=3,str=1.816), network(deg=3,str=1.816), algebra(deg=3,str=1.316), matrix(deg=3,str=1.316)
 #>     from      to    weight count
 #>    graph network 1.0000000     3
 #>  algebra  matrix 0.5000000     1
@@ -378,7 +472,10 @@ seqs <- list(
   c("focus", "distract", "distract", "focus")
 )
 cooccurrence(seqs, window = 2)
-#> # cooccurrence: 3 nodes, 2 edges (7 transactions)
+#> # cooccurrence: 3 nodes, 2 edges | density: 0.6667 | mean degree: 1.3333 | 7 transactions
+#> # similarity: none | counting: full
+#> # possible edges: 3 | isolates: 0
+#> # top nodes: focus(deg=2,str=5), distract(deg=1,str=4), confused(deg=1,str=1)
 #>      from    to weight count
 #>  distract focus      4     4
 #>  confused focus      1     1
@@ -390,9 +487,47 @@ theta <- data.frame(
   prob  = c(0.6, 0.3, 0.1, 0.4, 0.6, 0.5, 0.5)
 )
 cooccurrence(theta, field = "topic", by = "doc", weight_by = "prob")
-#> # cooccurrence: 3 nodes, 3 edges (3 transactions)
+#> # cooccurrence: 3 nodes, 3 edges | density: 1.0000 | mean degree: 2.0000 | 3 transactions
+#> # similarity: none | counting: weighted
+#> # possible edges: 3 | isolates: 0
+#> # top nodes: T3(deg=2,str=0.58), T1(deg=2,str=0.48), T2(deg=2,str=0.46)
 #>  from to weight count
 #>    T1 T3   0.30     2
 #>    T2 T3   0.28     2
 #>    T1 T2   0.18     1
+
+# One-hot / indicator table: name the indicator columns, ignore the rest
+onehot <- data.frame(
+  doc = c("d1", "d2", "d3"),
+  A = c(1, 0, 1), B = c(1, 1, 0), C = c(0, 1, 1)
+)
+cooccurrence(onehot, vars = c("A", "B", "C"))
+#> # cooccurrence: 3 nodes, 3 edges | density: 1.0000 | mean degree: 2.0000 | 3 transactions
+#> # similarity: none | counting: full
+#> # possible edges: 3 | isolates: 0
+#> # top nodes: A(deg=2,str=2), B(deg=2,str=2), C(deg=2,str=2)
+#>  from to weight count
+#>     A  B      1     1
+#>     A  C      1     1
+#>     B  C      1     1
+
+# Raw event log: sessionised on a 15-minute gap, then windowed
+# \donttest{
+if (requireNamespace("Nestimate", quietly = TRUE)) {
+  events <- data.frame(
+    student = rep(c("s1", "s2"), each = 3),
+    code    = c("read", "write", "read", "test", "write", "read"),
+    stamp   = as.POSIXct("2026-01-01 09:00:00") + c(0, 60, 120, 0, 30, 90)
+  )
+  cooccurrence(events, actor = "student", action = "code", time = "stamp")
+}
+#> # cooccurrence: 3 nodes, 3 edges | density: 1.0000 | mean degree: 2.0000 | 2 transactions
+#> # similarity: none | counting: full
+#> # possible edges: 3 | isolates: 0
+#> # top nodes: read(deg=2,str=3), write(deg=2,str=3), test(deg=2,str=2)
+#>  from    to weight count
+#>  read write      2     2
+#>  read  test      1     1
+#>  test write      1     1
+# }
 ```

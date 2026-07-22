@@ -11,7 +11,7 @@ Nestimate::bootstrap_network(), etc."><meta property="og:image" content="https:/
 
     <a class="navbar-brand me-2" href="../index.html">cooccure</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,10 +51,7 @@ compatible with <code>Nestimate::centrality()</code>,
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">as_netobject</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'cooccurrence'</span></span>
-<span><span class="fu">as_netobject</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># S3 method for class 'co_bootstrap'</span></span>
-<span><span class="fu">as_netobject</span><span class="op">(</span><span class="va">x</span>, stable_only <span class="op">=</span> <span class="cn">TRUE</span>, weight <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"boot_mean"</span>, <span class="st">"weight"</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">as_netobject</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -67,16 +64,6 @@ compatible with <code>Nestimate::centrality()</code>,
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Ignored.</p></dd>
-
-
-<dt id="arg-stable-only">stable_only<a class="anchor" aria-label="anchor" href="#arg-stable-only"></a></dt>
-<dd><p>Logical. For a <code>co_bootstrap</code> result, keep only
-<code>stable</code> (credible) edges. Default <code>TRUE</code>.</p></dd>
-
-
-<dt id="arg-weight">weight<a class="anchor" aria-label="anchor" href="#arg-weight"></a></dt>
-<dd><p>Character. For a <code>co_bootstrap</code> result, edge weight to
-carry: <code>"boot_mean"</code> (default) or <code>"weight"</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -103,7 +90,7 @@ carry: <code>"boot_mean"</code> (default) or <code>"weight"</code>.</p></dd>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer></div>

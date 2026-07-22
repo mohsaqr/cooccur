@@ -69,7 +69,10 @@ head(actors)
 #> 37 Adventure,Animation,Comedy           7.1
 #> 43 Adventure,Animation,Comedy           7.1
 cooccurrence(actors, field = "actor", by = "tconst", similarity = "jaccard")
-#> # cooccurrence: 590 nodes, 4353 edges (401 transactions) | similarity: jaccard
+#> # cooccurrence: 624 nodes, 4353 edges | density: 0.0224 | mean degree: 13.9519 | 401 transactions
+#> # similarity: jaccard | counting: full
+#> # possible edges: 194376 | isolates: 34
+#> # top nodes: Dawn Michelle King(deg=66,str=24.67), Ricki Lander(deg=66,str=24.67), Brad Rea(deg=66,str=24.67), Kevin LaRosa II(deg=66,str=24.67), Michael Runyard(deg=66,str=24.67)
 #>                  from                 to weight count
 #>          Anson Antony    Antony Varghese      1     2
 #>    Catalina Harabagiu Cerasela Iosifescu      1     2

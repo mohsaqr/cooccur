@@ -66,7 +66,10 @@ head(movies)
 #> 5                     Drama  2010s           7.2     1804
 #> 6      Comedy,Drama,Romance  2010s           7.2     1234
 cooccurrence(movies, field = "genres", sep = ",", similarity = "jaccard")
-#> # cooccurrence: 22 nodes, 129 edges (1000 transactions) | similarity: jaccard
+#> # cooccurrence: 22 nodes, 129 edges | density: 0.5584 | mean degree: 11.7273 | 1000 transactions
+#> # similarity: jaccard | counting: full
+#> # possible edges: 231 | isolates: 0
+#> # top nodes: Drama(deg=20,str=1.178), Comedy(deg=19,str=0.9227), Action(deg=17,str=1.07), Romance(deg=17,str=0.5551), Adventure(deg=15,str=0.9235)
 #>         from          to    weight count
 #>    Adventure   Animation 0.2846715    39
 #>       Action       Crime 0.2369478    59

@@ -1,6 +1,6 @@
 # Print a cooccurrence edge list
 
-Print a cooccurrence edge list
+Prints a compact network diagnostic header followed by an edge preview.
 
 ## Usage
 
@@ -32,7 +32,10 @@ Invisibly returns `x`.
 ``` r
 res <- cooccurrence(list(c("A","B","C"), c("B","C"), c("A","C")))
 print(res)
-#> # cooccurrence: 3 nodes, 3 edges (3 transactions)
+#> # cooccurrence: 3 nodes, 3 edges | density: 1.0000 | mean degree: 2.0000 | 3 transactions
+#> # similarity: none | counting: full
+#> # possible edges: 3 | isolates: 0
+#> # top nodes: C(deg=2,str=4), A(deg=2,str=3), B(deg=2,str=3)
 #>  from to weight count
 #>     A  C      2     2
 #>     B  C      2     2

@@ -1,13 +1,13 @@
 # Plot a cooccurrence network
 
-Plots the co-occurrence matrix as a heatmap. If igraph is available,
-plots a network graph instead.
+Plots the co-occurrence matrix as a heatmap, an igraph network, or a
+base-R degree distribution.
 
 ## Usage
 
 ``` r
 # S3 method for class 'cooccurrence'
-plot(x, type = c("heatmap", "network"), ...)
+plot(x, type = c("heatmap", "network", "degree"), ...)
 ```
 
 ## Arguments
@@ -18,7 +18,8 @@ plot(x, type = c("heatmap", "network"), ...)
 
 - type:
 
-  Character. `"heatmap"` (default) or `"network"` (requires igraph).
+  Character. `"heatmap"` (default), `"network"` (requires igraph), or
+  `"degree"` for a base-R degree distribution bar plot.
 
 - ...:
 

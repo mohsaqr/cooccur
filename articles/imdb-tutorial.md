@@ -51,7 +51,10 @@ values within that field.
 ``` r
 
 cooccurrence(movies, field = "genres", sep = ",")
-#> # cooccurrence: 22 nodes, 129 edges (1000 transactions)
+#> # cooccurrence: 22 nodes, 129 edges | density: 0.5584 | mean degree: 11.7273 | 1000 transactions
+#> # similarity: none | counting: full
+#> # possible edges: 231 | isolates: 0
+#> # top nodes: Drama(deg=20,str=812), Comedy(deg=19,str=412), Action(deg=17,str=295), Romance(deg=17,str=237), Adventure(deg=15,str=195)
 #>       from          to weight count
 #>     Comedy       Drama    159   159
 #>      Drama     Romance    131   131
@@ -102,7 +105,10 @@ the top 3 pairs under each measure using a movie genres dataset.
 ``` r
 
 co(movies, field = "genres", sep = ",", similarity = "none", top_n = 3)
-#> # cooccurrence: 4 nodes, 3 edges (1000 transactions)
+#> # cooccurrence: 22 nodes, 3 edges | density: 0.0130 | mean degree: 0.2727 | 1000 transactions
+#> # similarity: none | counting: full
+#> # possible edges: 231 | isolates: 18
+#> # top nodes: Drama(deg=3,str=381), Comedy(deg=1,str=159), Romance(deg=1,str=131), Crime(deg=1,str=91)
 #>    from      to weight count
 #>  Comedy   Drama    159   159
 #>   Drama Romance    131   131
@@ -118,7 +124,10 @@ co(movies, field = "genres", sep = ",", similarity = "none", top_n = 3)
 ``` r
 
 co(movies, field = "genres", sep = ",", similarity = "jaccard", top_n = 3)
-#> # cooccurrence: 6 nodes, 3 edges (1000 transactions) | similarity: jaccard
+#> # cooccurrence: 22 nodes, 3 edges | density: 0.0130 | mean degree: 0.2727 | 1000 transactions
+#> # similarity: jaccard | counting: full
+#> # possible edges: 231 | isolates: 16
+#> # top nodes: Adventure(deg=1,str=0.2847), Animation(deg=1,str=0.2847), Action(deg=1,str=0.2369), Crime(deg=1,str=0.2369), Comedy(deg=1,str=0.2112)
 #>       from        to    weight count
 #>  Adventure Animation 0.2846715    39
 #>     Action     Crime 0.2369478    59
@@ -133,7 +142,10 @@ co(movies, field = "genres", sep = ",", similarity = "jaccard", top_n = 3)
 ``` r
 
 co(movies, field = "genres", sep = ",", similarity = "cosine", top_n = 3)
-#> # cooccurrence: 6 nodes, 3 edges (1000 transactions) | similarity: cosine
+#> # cooccurrence: 22 nodes, 3 edges | density: 0.0130 | mean degree: 0.2727 | 1000 transactions
+#> # similarity: cosine | counting: full
+#> # possible edges: 231 | isolates: 16
+#> # top nodes: Adventure(deg=1,str=0.4481), Animation(deg=1,str=0.4481), Drama(deg=1,str=0.4113), Romance(deg=1,str=0.4113), Action(deg=1,str=0.3831)
 #>       from        to    weight count
 #>  Adventure Animation 0.4480983    39
 #>      Drama   Romance 0.4113075   131
@@ -149,7 +161,10 @@ co(movies, field = "genres", sep = ",", similarity = "cosine", top_n = 3)
 ``` r
 
 co(movies, field = "genres", sep = ",", similarity = "inclusion", top_n = 3)
-#> # cooccurrence: 5 nodes, 3 edges (1000 transactions) | similarity: inclusion
+#> # cooccurrence: 22 nodes, 3 edges | density: 0.0130 | mean degree: 0.2727 | 1000 transactions
+#> # similarity: inclusion | counting: full
+#> # possible edges: 231 | isolates: 17
+#> # top nodes: News(deg=2,str=2), Documentary(deg=1,str=1), Drama(deg=1,str=1), History(deg=1,str=1), Western(deg=1,str=1)
 #>         from      to weight count
 #>  Documentary    News      1     1
 #>      History    News      1     1
@@ -165,7 +180,10 @@ co(movies, field = "genres", sep = ",", similarity = "inclusion", top_n = 3)
 ``` r
 
 co(movies, field = "genres", sep = ",", similarity = "association", top_n = 3)
-#> # cooccurrence: 5 nodes, 3 edges (1000 transactions) | similarity: association
+#> # cooccurrence: 22 nodes, 3 edges | density: 0.0130 | mean degree: 0.2727 | 1000 transactions
+#> # similarity: association | counting: full
+#> # possible edges: 231 | isolates: 17
+#> # top nodes: News(deg=2,str=0.02271), History(deg=1,str=0.01613), Horror(deg=1,str=0.01136), Sci-Fi(deg=1,str=0.01136), Documentary(deg=1,str=0.006579)
 #>         from     to      weight count
 #>      History   News 0.016129032     1
 #>       Horror Sci-Fi 0.011363636     2
@@ -184,7 +202,10 @@ co(movies, field = "genres", sep = ",", similarity = "association", top_n = 3)
 ``` r
 
 co(movies, field = "genres", sep = ",", similarity = "dice", top_n = 3)
-#> # cooccurrence: 6 nodes, 3 edges (1000 transactions) | similarity: dice
+#> # cooccurrence: 22 nodes, 3 edges | density: 0.0130 | mean degree: 0.2727 | 1000 transactions
+#> # similarity: dice | counting: full
+#> # possible edges: 231 | isolates: 16
+#> # top nodes: Adventure(deg=1,str=0.4432), Animation(deg=1,str=0.4432), Action(deg=1,str=0.3831), Crime(deg=1,str=0.3831), Comedy(deg=1,str=0.3487)
 #>       from        to    weight count
 #>  Adventure Animation 0.4431818    39
 #>     Action     Crime 0.3831169    59
@@ -202,7 +223,10 @@ co(movies, field = "genres", sep = ",", similarity = "dice", top_n = 3)
 ``` r
 
 co(movies, field = "genres", sep = ",", similarity = "equivalence", top_n = 3)
-#> # cooccurrence: 6 nodes, 3 edges (1000 transactions) | similarity: equivalence
+#> # cooccurrence: 22 nodes, 3 edges | density: 0.0130 | mean degree: 0.2727 | 1000 transactions
+#> # similarity: equivalence | counting: full
+#> # possible edges: 231 | isolates: 16
+#> # top nodes: Adventure(deg=1,str=0.2008), Animation(deg=1,str=0.2008), Drama(deg=1,str=0.1692), Romance(deg=1,str=0.1692), Action(deg=1,str=0.1468)
 #>       from        to    weight count
 #>  Adventure Animation 0.2007921    39
 #>      Drama   Romance 0.1691739   131
@@ -250,7 +274,10 @@ contains.
 ``` r
 
 co(movies, field = "genres", sep = ",", top_n = 5)
-#> # cooccurrence: 5 nodes, 5 edges (1000 transactions)
+#> # cooccurrence: 22 nodes, 5 edges | density: 0.0216 | mean degree: 0.4545 | 1000 transactions
+#> # similarity: none | counting: full
+#> # possible edges: 231 | isolates: 17
+#> # top nodes: Drama(deg=4,str=452), Comedy(deg=2,str=222), Romance(deg=2,str=194), Crime(deg=1,str=91), Action(deg=1,str=71)
 #>    from      to weight count
 #>  Comedy   Drama    159   159
 #>   Drama Romance    131   131
@@ -262,7 +289,10 @@ co(movies, field = "genres", sep = ",", top_n = 5)
 ``` r
 
 co(movies, field = "genres", sep = ",", counting = "fractional", top_n = 5)
-#> # cooccurrence: 5 nodes, 5 edges (1000 transactions)
+#> # cooccurrence: 22 nodes, 5 edges | density: 0.0216 | mean degree: 0.4545 | 1000 transactions
+#> # similarity: none | counting: fractional
+#> # possible edges: 231 | isolates: 17
+#> # top nodes: Drama(deg=4,str=293), Comedy(deg=2,str=146), Romance(deg=2,str=133), Crime(deg=1,str=52.5), Action(deg=1,str=38.5)
 #>    from      to weight count
 #>  Comedy   Drama  107.5   159
 #>   Drama Romance   94.5   131
@@ -295,7 +325,10 @@ any similarity measure.
 ``` r
 
 co(movies, field = "genres", sep = ",", scale = "log", top_n = 5)
-#> # cooccurrence: 5 nodes, 5 edges (1000 transactions) | scale: log
+#> # cooccurrence: 22 nodes, 5 edges | density: 0.0216 | mean degree: 0.4545 | 1000 transactions
+#> # similarity: none | counting: full | scale: log
+#> # possible edges: 231 | isolates: 17
+#> # top nodes: Drama(deg=4,str=18.76), Comedy(deg=2,str=9.234), Romance(deg=2,str=9.042), Crime(deg=1,str=4.522), Action(deg=1,str=4.277)
 #>    from      to   weight count
 #>  Comedy   Drama 5.075174   159
 #>   Drama Romance 4.882802   131
@@ -316,7 +349,10 @@ co(movies, field = "genres", sep = ",", scale = "log", top_n = 5)
 ``` r
 
 co(movies, field = "genres", sep = ",", similarity = "jaccard", scale = "minmax", top_n = 5)
-#> # cooccurrence: 8 nodes, 5 edges (1000 transactions) | similarity: jaccard | scale: minmax
+#> # cooccurrence: 22 nodes, 5 edges | density: 0.0216 | mean degree: 0.4545 | 1000 transactions
+#> # similarity: jaccard | counting: full | scale: minmax
+#> # possible edges: 231 | isolates: 14
+#> # top nodes: Adventure(deg=2,str=1.728), Action(deg=2,str=1.559), Animation(deg=1,str=1), Crime(deg=1,str=0.8314), Comedy(deg=1,str=0.7403)
 #>       from          to    weight count
 #>  Adventure   Animation 1.0000000    39
 #>     Action       Crime 0.8314210    59
@@ -334,7 +370,10 @@ co(movies, field = "genres", sep = ",", similarity = "jaccard", scale = "minmax"
 ``` r
 
 co(movies, field = "genres", sep = ",", scale = "binary", top_n = 5)
-#> # cooccurrence: 4 nodes, 5 edges (1000 transactions) | scale: binary
+#> # cooccurrence: 22 nodes, 5 edges | density: 0.0216 | mean degree: 0.4545 | 1000 transactions
+#> # similarity: none | counting: full | scale: binary
+#> # possible edges: 231 | isolates: 18
+#> # top nodes: Action(deg=3,str=3), Adventure(deg=3,str=3), Animation(deg=2,str=2), Biography(deg=2,str=2)
 #>       from        to weight count
 #>     Action Adventure      1    44
 #>     Action Animation      1    27
@@ -353,7 +392,10 @@ co(movies, field = "genres", sep = ",", scale = "binary", top_n = 5)
 ``` r
 
 co(movies, field = "genres", sep = ",", scale = "sqrt", top_n = 5)
-#> # cooccurrence: 5 nodes, 5 edges (1000 transactions) | scale: sqrt
+#> # cooccurrence: 22 nodes, 5 edges | density: 0.0216 | mean degree: 0.4545 | 1000 transactions
+#> # similarity: none | counting: full | scale: sqrt
+#> # possible edges: 231 | isolates: 17
+#> # top nodes: Drama(deg=4,str=42.02), Comedy(deg=2,str=20.55), Romance(deg=2,str=19.38), Crime(deg=1,str=9.539), Action(deg=1,str=8.426)
 #>    from      to    weight count
 #>  Comedy   Drama 12.609520   159
 #>   Drama Romance 11.445523   131
@@ -375,7 +417,10 @@ by volume.
 
 co(movies, field = "genres", sep = ",",
    similarity = "association", scale = "log", min_occur = 20, top_n = 5)
-#> # cooccurrence: 9 nodes, 5 edges (998 transactions) | similarity: association | scale: log
+#> # cooccurrence: 17 nodes, 5 edges | density: 0.0368 | mean degree: 0.5882 | 998 transactions
+#> # similarity: association | counting: full | scale: log
+#> # possible edges: 136 | isolates: 8
+#> # top nodes: Animation(deg=2,str=0.008659), Adventure(deg=1,str=0.005135), History(deg=1,str=0.004526), War(deg=1,str=0.004526), Mystery(deg=1,str=0.003804)
 #>         from        to      weight count
 #>    Adventure Animation 0.005135307    39
 #>      History       War 0.004526032     9
@@ -397,7 +442,10 @@ can be used independently or combined.
 ``` r
 
 co(movies, field = "genres", sep = ",", similarity = "jaccard", min_occur = 20)
-#> # cooccurrence: 17 nodes, 102 edges (998 transactions) | similarity: jaccard
+#> # cooccurrence: 17 nodes, 102 edges | density: 0.7500 | mean degree: 12.0000 | 998 transactions
+#> # similarity: jaccard | counting: full
+#> # possible edges: 136 | isolates: 0
+#> # top nodes: Drama(deg=16,str=1.153), Comedy(deg=16,str=0.8949), Romance(deg=15,str=0.5377), Action(deg=14,str=1.009), Adventure(deg=14,str=0.8788)
 #>         from          to    weight count
 #>    Adventure   Animation 0.2846715    39
 #>       Action       Crime 0.2369478    59
@@ -419,7 +467,10 @@ co(movies, field = "genres", sep = ",", similarity = "jaccard", min_occur = 20)
 ``` r
 
 co(movies, field = "genres", sep = ",", similarity = "jaccard", threshold = 0.15)
-#> # cooccurrence: 12 nodes, 10 edges (1000 transactions) | similarity: jaccard
+#> # cooccurrence: 22 nodes, 10 edges | density: 0.0433 | mean degree: 0.9091 | 1000 transactions
+#> # similarity: jaccard | counting: full
+#> # possible edges: 231 | isolates: 10
+#> # top nodes: Adventure(deg=2,str=0.4922), Action(deg=2,str=0.4445), Crime(deg=2,str=0.4115), Drama(deg=2,str=0.4087), Comedy(deg=2,str=0.3792)
 #>         from          to    weight count
 #>    Adventure   Animation 0.2846715    39
 #>       Action       Crime 0.2369478    59
@@ -439,7 +490,10 @@ co(movies, field = "genres", sep = ",", similarity = "jaccard", threshold = 0.15
 ``` r
 
 co(movies, field = "genres", sep = ",", similarity = "jaccard", top_n = 10)
-#> # cooccurrence: 12 nodes, 10 edges (1000 transactions) | similarity: jaccard
+#> # cooccurrence: 22 nodes, 10 edges | density: 0.0433 | mean degree: 0.9091 | 1000 transactions
+#> # similarity: jaccard | counting: full
+#> # possible edges: 231 | isolates: 10
+#> # top nodes: Adventure(deg=2,str=0.4922), Action(deg=2,str=0.4445), Crime(deg=2,str=0.4115), Drama(deg=2,str=0.4087), Comedy(deg=2,str=0.3792)
 #>         from          to    weight count
 #>    Adventure   Animation 0.2846715    39
 #>       Action       Crime 0.2369478    59
@@ -461,7 +515,10 @@ network size and density:
 co(movies, field = "genres", sep = ",",
    similarity = "association", counting = "fractional",
    min_occur = 15, threshold = 0.001, top_n = 20)
-#> # cooccurrence: 15 nodes, 20 edges (999 transactions) | similarity: association
+#> # cooccurrence: 18 nodes, 20 edges | density: 0.1307 | mean degree: 2.2222 | 999 transactions
+#> # similarity: association | counting: fractional
+#> # possible edges: 153 | isolates: 3
+#> # top nodes: Animation(deg=4,str=0.007167), Adventure(deg=4,str=0.006691), Action(deg=4,str=0.005445), Documentary(deg=3,str=0.006946), Thriller(deg=3,str=0.004857)
 #>         from          to      weight count
 #>  Documentary       Music 0.002973178    28
 #>    Adventure   Animation 0.002574257    39
@@ -487,7 +544,10 @@ specifies the grouping column.
 
 co(actors, field = "actor", by = "tconst",
    similarity = "jaccard", min_occur = 3, threshold = 0.1)
-#> # cooccurrence: 12 nodes, 7 edges (47 transactions) | similarity: jaccard
+#> # cooccurrence: 19 nodes, 7 edges | density: 0.0409 | mean degree: 0.7368 | 47 transactions
+#> # similarity: jaccard | counting: full
+#> # possible edges: 171 | isolates: 7
+#> # top nodes: Dina Pathak(deg=2,str=0.4), Mukesh(deg=2,str=0.4), Julia Bache-Wiig(deg=1,str=1), Robin Ottersen(deg=1,str=1), Constantin Fleancu(deg=1,str=0.5)
 #>                from             to weight count
 #>    Julia Bache-Wiig Robin Ottersen    1.0     3
 #>  Constantin Fleancu Liliana Mocanu    0.5     2
@@ -509,7 +569,10 @@ dataset is small and cast sizes are similar across movies.
 co(actors, field = "actor", by = "tconst",
    similarity = "jaccard", counting = "fractional",
    min_occur = 3, threshold = 0.05)
-#> # cooccurrence: 12 nodes, 7 edges (47 transactions) | similarity: jaccard
+#> # cooccurrence: 19 nodes, 7 edges | density: 0.0409 | mean degree: 0.7368 | 47 transactions
+#> # similarity: jaccard | counting: fractional
+#> # possible edges: 171 | isolates: 7
+#> # top nodes: Dina Pathak(deg=2,str=0.4), Mukesh(deg=2,str=0.4), Julia Bache-Wiig(deg=1,str=1), Robin Ottersen(deg=1,str=1), Constantin Fleancu(deg=1,str=0.5)
 #>                from             to weight count
 #>    Julia Bache-Wiig Robin Ottersen    1.0     3
 #>  Constantin Fleancu Liliana Mocanu    0.5     2
@@ -535,7 +598,10 @@ frame with a group column.
 co(movies, field = "genres", sep = ",",
    split_by = "decade", similarity = "jaccard",
    min_occur = 5, top_n = 5)
-#> # cooccurrence: 15 nodes, 30 edges (82 transactions) | split_by: decade (6 groups) | similarity: jaccard
+#> # cooccurrence: 15 nodes, 30 edges
+#> # split_by: decade (6 groups)
+#> # similarity: jaccard | counting: full
+#> # isolates: 0 | per-group metrics: summary()
 #>         from        to    weight count group
 #>    Adventure Animation 0.5000000     7 1970s
 #>        Crime  Thriller 0.4285714     6 1970s
@@ -550,7 +616,8 @@ co(movies, field = "genres", sep = ",",
 #> # ... 20 more edges
 ```
 
-Individual groups can be extracted by filtering the group column:
+Individual groups can be extracted with
+[`subset()`](https://rdrr.io/r/base/subset.html) on the group column:
 
 ``` r
 
@@ -558,14 +625,46 @@ decades <- co(movies, field = "genres", sep = ",",
               split_by = "decade", similarity = "jaccard",
               min_occur = 5, top_n = 5)
 
-decades[decades$group == "2010s", ]
-#> # cooccurrence: 8 nodes, 5 edges (82 transactions) | split_by: decade (6 groups) | similarity: jaccard
+subset(decades, group == "2010s")
+#> # cooccurrence: 8 nodes, 5 edges
+#> # similarity: none | counting: full
+#> # isolates: 0 | per-group metrics: summary()
 #>       from          to    weight count group
 #>     Action       Crime 0.2988506    26 2010s
 #>  Adventure   Animation 0.2884615    15 2010s
 #>  Biography Documentary 0.2872340    27 2010s
 #>     Action   Adventure 0.1951220    16 2010s
 #>     Comedy       Drama 0.1911111    43 2010s
+```
+
+Group-level network metrics come from
+[`summary()`](https://rdrr.io/r/base/summary.html) as a tidy data frame:
+
+``` r
+
+decade_summary <- summary(decades)
+#> cooccurrence network
+#> ------------------------------
+#> Nodes          : 15
+#> Edges          : 30 (pooled across groups)
+#> Isolates       : 0
+#> Split by       : decade (6 groups)
+#> Similarity     : jaccard
+#> Counting       : full
+#> Weight range   : [0.1889, 0.5]
+#> Weight mean    : 0.2731
+#> Count range    : [3, 43]
+#> Count mean     : 13.73
+#> Groups         : 1970s(12 nodes, 5 edges, 0.0758 density), 1980s(14 nodes, 5 edges, 0.0549 density), 1990s(13 nodes, 5 edges, 0.0641 density), 2000s(16 nodes, 5 edges, 0.0417 density), 2010s(17 nodes, 5 edges, 0.0368 density)
+
+as.data.frame(decade_summary, what = "groups")
+#>   group n_nodes n_edges possible_edges    density weight_mean count_sum
+#> 1 1970s      12       5             66 0.07575758   0.3475422        27
+#> 2 1980s      14       5             91 0.05494505   0.2598135        48
+#> 3 1990s      13       5             78 0.06410256   0.2959117        69
+#> 4 2000s      16       5            120 0.04166667   0.2316965        99
+#> 5 2010s      17       5            136 0.03676471   0.2521558       127
+#> 6 2020s      13       5             78 0.06410256   0.2512590        42
 ```
 
 - `split_by = "rating_band"` — Splitting by rating band reveals whether
@@ -580,7 +679,10 @@ movies$rating_band <- ifelse(movies$averageRating >= 8, "8+", "7-7.9")
 co(movies, field = "genres", sep = ",",
    split_by = "rating_band", similarity = "jaccard",
    min_occur = 10, top_n = 5)
-#> # cooccurrence: 10 nodes, 10 edges (861 transactions) | split_by: rating_band (2 groups) | similarity: jaccard
+#> # cooccurrence: 10 nodes, 10 edges
+#> # split_by: rating_band (2 groups)
+#> # similarity: jaccard | counting: full
+#> # isolates: 0 | per-group metrics: summary()
 #>         from          to    weight count group
 #>    Adventure   Animation 0.2926829    36 7-7.9
 #>       Action       Crime 0.2477477    55 7-7.9
@@ -603,7 +705,10 @@ visualization.
 ``` r
 
 co(movies, field = "genres", sep = ",", top_n = 5)
-#> # cooccurrence: 5 nodes, 5 edges (1000 transactions)
+#> # cooccurrence: 22 nodes, 5 edges | density: 0.0216 | mean degree: 0.4545 | 1000 transactions
+#> # similarity: none | counting: full
+#> # possible edges: 231 | isolates: 17
+#> # top nodes: Drama(deg=4,str=452), Comedy(deg=2,str=222), Romance(deg=2,str=194), Crime(deg=1,str=91), Action(deg=1,str=71)
 #>    from      to weight count
 #>  Comedy   Drama    159   159
 #>   Drama Romance    131   131
@@ -622,7 +727,10 @@ columns. The result can be written straight to CSV.
 
 co(movies, field = "genres", sep = ",",
    similarity = "jaccard", output = "gephi", top_n = 10)
-#> # cooccurrence: 0 nodes, 10 edges (1000 transactions) | similarity: jaccard
+#> # cooccurrence: 22 nodes, 10 edges | density: 0.0433 | mean degree: 0.9091 | 1000 transactions
+#> # similarity: jaccard | counting: full
+#> # possible edges: 231 | isolates: 10
+#> # top nodes: Adventure(deg=2,str=0.4922), Action(deg=2,str=0.4445), Crime(deg=2,str=0.4115), Drama(deg=2,str=0.4087), Comedy(deg=2,str=0.3792)
 #>       Source      Target    Weight       Type Count
 #>    Adventure   Animation 0.2846715 Undirected    39
 #>       Action       Crime 0.2369478 Undirected    59
@@ -687,9 +795,9 @@ functions work on the result without any conversion.
 g <- co(movies, field = "genres", sep = ",",
         similarity = "jaccard", min_occur = 20, output = "igraph")
 g
-#> IGRAPH 04ab1a2 UNW- 17 102 -- 
+#> IGRAPH 4713d40 UNW- 17 102 -- 
 #> + attr: name (v/c), weight (e/n), count (e/n)
-#> + edges from 04ab1a2 (vertex names):
+#> + edges from 4713d40 (vertex names):
 #>  [1] Adventure  --Animation   Action     --Crime       Comedy     --Drama      
 #>  [4] Action     --Adventure   Biography  --Documentary Drama      --Romance    
 #>  [7] Crime      --Thriller    Comedy     --Romance     Documentary--Music      
@@ -884,9 +992,9 @@ igraph ecosystem for further network analysis:
 ``` r
 
 as_igraph(result)
-#> IGRAPH 1074666 UNW- 17 102 -- 
+#> IGRAPH 12b6edc UNW- 17 102 -- 
 #> + attr: name (v/c), weight (e/n), count (e/n)
-#> + edges from 1074666 (vertex names):
+#> + edges from 12b6edc (vertex names):
 #>  [1] Adventure  --Animation   Action     --Crime       Comedy     --Drama      
 #>  [4] Action     --Adventure   Biography  --Documentary Drama      --Romance    
 #>  [7] Crime      --Thriller    Comedy     --Romance     Documentary--Music      

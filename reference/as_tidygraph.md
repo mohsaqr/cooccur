@@ -46,7 +46,7 @@ if (requireNamespace("tidygraph", quietly = TRUE) &&
 #> #
 #> # Edge Data: 3 × 4
 #>    from    to weight count
-#>   <int> <int>  <dbl> <int>
+#>   <int> <int>  <dbl> <dbl>
 #> 1     1     3      2     2
 #> 2     2     3      2     2
 #> 3     1     2      1     1

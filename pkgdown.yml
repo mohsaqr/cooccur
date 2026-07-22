@@ -1,9 +1,9 @@
 pandoc: 3.8.3
-pkgdown: 2.2.0
+pkgdown: 2.2.1
 pkgdown_sha: ~
 articles:
   imdb-tutorial: imdb-tutorial.html
-last_built: 2026-06-20T20:19Z
+last_built: 2026-07-22T07:14Z
 urls:
   reference: https://saqr.me/cooccure/reference
   article: https://saqr.me/cooccure/articles

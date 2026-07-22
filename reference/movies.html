@@ -11,7 +11,7 @@ and suitable for use as the field argument to cooccurrence."><meta property="og:
 
     <a class="navbar-brand me-2" href="../index.html">cooccure</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -99,7 +99,10 @@ and suitable for use as the <code>field</code> argument to <code><a href="cooccu
 <span class="r-out co"><span class="r-pr">#&gt;</span> 5                     Drama  2010s           7.2     1804</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 6      Comedy,Drama,Romance  2010s           7.2     1234</span>
 <span class="r-in"><span><span class="fu"><a href="cooccurrence.html">cooccurrence</a></span><span class="op">(</span><span class="va">movies</span>, field <span class="op">=</span> <span class="st">"genres"</span>, sep <span class="op">=</span> <span class="st">","</span>, similarity <span class="op">=</span> <span class="st">"jaccard"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> # cooccurrence: 22 nodes, 129 edges (1000 transactions) | similarity: jaccard</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # cooccurrence: 22 nodes, 129 edges | density: 0.5584 | mean degree: 11.7273 | 1000 transactions</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # similarity: jaccard | counting: full</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # possible edges: 231 | isolates: 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> # top nodes: Drama(deg=20,str=1.178), Comedy(deg=19,str=0.9227), Action(deg=17,str=1.07), Romance(deg=17,str=0.5551), Adventure(deg=15,str=0.9235)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         from          to    weight count</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    Adventure   Animation 0.2846715    39</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       Action       Crime 0.2369478    59</span>
@@ -123,7 +126,7 @@ and suitable for use as the <code>field</code> argument to <code><a href="cooccu
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer></div>

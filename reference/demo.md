@@ -38,7 +38,10 @@ head(demo)
 #> 5    Goodfellas Robert De Niro Crime
 #> 6    Goodfellas     Ray Liotta Crime
 cooccurrence(demo, field = "actor", by = "movie", similarity = "jaccard")
-#> # cooccurrence: 30 nodes, 43 edges (10 transactions) | similarity: jaccard
+#> # cooccurrence: 30 nodes, 43 edges | density: 0.0989 | mean degree: 2.8667 | 10 transactions
+#> # similarity: jaccard | counting: full
+#> # possible edges: 435 | isolates: 0
+#> # top nodes: Al Pacino(deg=6,str=2.833), Robert De Niro(deg=6,str=2.833), Leonardo DiCaprio(deg=5,str=2.333), Michael Caine(deg=4,str=1.833), Bruce Willis(deg=3,str=3)
 #>            from                   to weight count
 #>       Brad Pitt        Edward Norton      1     1
 #>  Christian Bale         Heath Ledger      1     1
