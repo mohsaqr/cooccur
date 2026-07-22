@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">cooccure</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,7 +36,7 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.2.0" id="cooccure-020">cooccure 0.2.0<a class="anchor" aria-label="anchor" href="#cooccure-020"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.3.0" id="cooccure-030">cooccure 0.3.0<a class="anchor" aria-label="anchor" href="#cooccure-030"></a></h2>
 <ul><li>
 <code><a href="../reference/cooccurrence.html">cooccurrence()</a></code> gains a <code>window =</code> parameter for sliding-window co-occurrence on ordered sequence input (lists of vectors and wide TraMineR-style data frames via <code>field = "all"</code>). Each window of <code>w</code> consecutive positions becomes one transaction; states inside the same window co-occur. <code>window = sequence_length</code> reduces to the existing bag-of-states behaviour. TraMineR void markers (<code>NA</code>, <code>""</code>, <code>"%"</code>, <code>"*"</code>, <code>"NaN"</code>) are dropped before windowing. Pure base R via <code><a href="https://rdrr.io/r/stats/embed.html" class="external-link">embed()</a></code>.</li>
 <li>
@@ -63,6 +63,9 @@
 <li>Bug fix: unknown arguments were silently swallowed by <code>...</code>, so a typo such as <code>simliarity = "jaccard"</code> returned raw counts with no warning. Unknown or unnamed arguments now raise an error.</li>
 <li>
 <code><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame()</a></code> on a <code>summary.cooccurrence</code> object returns tidy node-level metrics (<code>what = "nodes"</code>, the default) or group-level metrics (<code>what = "groups"</code>), so callers no longer reach into the summary object’s internals.</li>
+<li>
+<code>similarity = "relative"</code> is asymmetric, so each direction is now thresholded on its own value. Filtering by the undirected pair could retain a direction whose weight was below <code>threshold</code>.</li>
+<li>Added a cross-implementation test suite pinning <code><a href="../reference/cooccurrence.html">cooccurrence()</a></code> to <code><a href="https://saqr.me/Nestimate/reference/cooccurrence.html" class="external-link">Nestimate::cooccurrence()</a></code> across all eight similarity measures, all five shared input formats, <code>min_occur</code>, <code>threshold</code>, <code>top_n</code>, their combinations, degenerate inputs, and randomised networks. The two agree exactly once conventions are aligned: Nestimate stores item frequency on the matrix diagonal (<code>diagonal = TRUE</code>) where cooccure zeroes it, and Nestimate keeps every edge tied at the <code>top_n</code> cut where cooccure truncates strictly at N.</li>
 <li>Bug fix: <code>weight_by</code> combined with <code>min_occur &gt; 1</code> errored with “‘dims’ must contain all (i,j) pairs”. The binary companion matrix was built from unfiltered column indices against filtered dimensions.</li>
 <li>Bug fix: <code>min_occur</code> support for weighted input counted rows rather than distinct documents, so duplicate rows for one document could keep an item that appears in only that document.</li>
 <li>Bug fix: <code>threshold</code> and <code>top_n</code> filtered the edge list but not the stored matrix, so <code><a href="../reference/as_matrix.html">as_matrix()</a></code>, the heatmap, and the cograph and netobject converters disagreed with the printed edges (<code>top_n = 1</code> returned one edge but a three-edge matrix). The matrix is now rebuilt from the surviving edges.</li>
