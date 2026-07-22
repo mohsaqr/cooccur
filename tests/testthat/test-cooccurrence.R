@@ -312,6 +312,34 @@ test_that("split_by produces a group column", {
   expect_equal(sort(unique(res$group)), c("2020", "2021"))
 })
 
+test_that("group is an alias for split_by", {
+  df <- data.frame(
+    year = c(2020, 2020, 2021, 2021),
+    kw = c("A; B", "A; C", "B; C", "B; D"),
+    stringsAsFactors = FALSE
+  )
+  by_split <- cooccurrence(df, field = "kw", sep = ";", split_by = "year")
+  by_group <- cooccurrence(df, field = "kw", sep = ";", group = "year")
+
+  expect_equal(as.data.frame(by_group), as.data.frame(by_split))
+  expect_equal(attr(by_group, "split_by"), "year")
+  expect_equal(attr(by_group, "groups"), attr(by_split, "groups"))
+})
+
+test_that("group and split_by cannot disagree", {
+  df <- data.frame(
+    year = c(2020, 2021),
+    cohort = c("A", "B"),
+    kw = c("X; Y", "X; Y"),
+    stringsAsFactors = FALSE
+  )
+  expect_error(
+    cooccurrence(df, field = "kw", sep = ";",
+                 split_by = "year", group = "cohort"),
+    "alias for `split_by`"
+  )
+})
+
 test_that("split_by computes separate networks per group", {
   df <- data.frame(
     grp = c("X", "X", "Y", "Y"),
@@ -560,6 +588,10 @@ test_that("print.cooccurrence shows header and edges", {
   expect_true(any(grepl("cooccurrence:", out)))
   expect_true(any(grepl("nodes", out)))
   expect_true(any(grepl("edges", out)))
+  expect_true(any(grepl("density", out)))
+  expect_true(any(grepl("mean degree", out)))
+  expect_true(any(grepl("possible edges", out)))
+  expect_true(any(grepl("top nodes", out)))
   expect_true(any(grepl("transactions", out)))
 })
 
@@ -678,10 +710,11 @@ test_that("print.cooccurrence handles zero edges", {
   expect_true(any(grepl("no edges", out)))
 })
 
-test_that("print.cooccurrence omits similarity when 'none'", {
+test_that("print.cooccurrence shows default method metadata", {
   res <- cooccurrence(.test_list, similarity = "none")
   out <- capture.output(print(res))
-  expect_false(any(grepl("similarity:", out)))
+  expect_true(any(grepl("similarity: none", out)))
+  expect_true(any(grepl("counting: full", out)))
 })
 
 # ========================================
@@ -694,18 +727,31 @@ test_that("summary.cooccurrence shows network stats", {
   expect_true(any(grepl("cooccurrence network", out)))
   expect_true(any(grepl("Nodes", out)))
   expect_true(any(grepl("Edges", out)))
+  expect_true(any(grepl("Possible edges", out)))
   expect_true(any(grepl("Density", out)))
+  expect_true(any(grepl("Mean degree", out)))
+  expect_true(any(grepl("Isolates", out)))
   expect_true(any(grepl("Transactions", out)))
   expect_true(any(grepl("Similarity.*jaccard", out)))
   expect_true(any(grepl("Weight range", out)))
+  expect_true(any(grepl("Weight mean", out)))
   expect_true(any(grepl("Count range", out)))
+  expect_true(any(grepl("Count mean", out)))
   expect_true(any(grepl("Top nodes", out)))
 })
 
-test_that("summary.cooccurrence returns object invisibly", {
+test_that("summary.cooccurrence returns structured summary invisibly", {
   res <- cooccurrence(.test_list)
-  capture.output(ret <- summary(res))
-  expect_identical(ret, res)
+  capture.output(vis <- withVisible(ret <- summary(res)))
+  expect_false(vis$visible)
+  expect_s3_class(ret, "summary.cooccurrence")
+  expect_equal(ret$n_nodes, 3L)
+  expect_equal(ret$n_edges, 3L)
+  expect_equal(ret$possible_edges, 3L)
+  expect_equal(ret$density, 1)
+  expect_equal(ret$mean_degree, 2)
+  expect_true(all(c("node", "degree", "strength", "count_strength",
+                    "frequency") %in% names(ret$nodes)))
 })
 
 test_that("summary.cooccurrence shows scale when not 'none'", {
@@ -722,10 +768,31 @@ test_that("summary.cooccurrence omits scale when 'none'", {
 
 test_that("summary.cooccurrence handles zero edges", {
   res <- cooccurrence(list(c("A"), c("B"), c("C")))
-  out <- capture.output(summary(res))
+  out <- capture.output(s <- summary(res))
   expect_true(any(grepl("Edges.*: 0", out)))
+  expect_equal(s$n_nodes, 3L)
+  expect_equal(s$n_edges, 0L)
+  expect_equal(s$density, 0)
+  expect_equal(s$isolates, 3L)
   # Should NOT print weight/count/top nodes sections
   expect_false(any(grepl("Weight range", out)))
+})
+
+test_that("summary.cooccurrence reports group summaries", {
+  df <- data.frame(
+    grp = c("X", "X", "Y", "Y"),
+    kw = c("A; B", "A; C", "B; C", "B; D"),
+    stringsAsFactors = FALSE
+  )
+  res <- cooccurrence(df, field = "kw", sep = ";", group = "grp")
+  out <- capture.output(s <- summary(res))
+
+  expect_true(any(grepl("Split by.*grp", out)))
+  expect_true(any(grepl("Groups", out)))
+  expect_s3_class(s, "summary.cooccurrence")
+  expect_true(all(c("group", "n_nodes", "n_edges", "density") %in%
+                    names(s$groups_summary)))
+  expect_equal(sort(s$groups_summary$group), c("X", "Y"))
 })
 
 # ========================================
@@ -750,6 +817,18 @@ test_that("plot.cooccurrence network requires igraph", {
   pdf(NULL); on.exit(dev.off(), add = TRUE)
   res <- cooccurrence(.test_list)
   expect_invisible(plot(res, type = "network"))
+})
+
+test_that("plot.cooccurrence degree distribution uses base graphics", {
+  pdf(NULL); on.exit(dev.off(), add = TRUE)
+  res <- cooccurrence(.test_list)
+  expect_invisible(plot(res, type = "degree"))
+})
+
+test_that("plot.cooccurrence degree distribution handles zero edges", {
+  pdf(NULL); on.exit(dev.off(), add = TRUE)
+  res <- cooccurrence(list(c("A"), c("B"), c("C")))
+  expect_invisible(plot(res, type = "degree"))
 })
 
 test_that("plot.cooccurrence returns x invisibly", {
@@ -1479,4 +1558,538 @@ test_that("window combined with split_by computes per group", {
   expect_setequal(unique(res$group), c("g1", "g2"))
   ## Each group should have at least one edge.
   expect_true(all(table(res$group) >= 1L))
+})
+
+
+# ========================================
+# 20. Pooled metrics are undefined for split_by results
+# ========================================
+
+.split_fixture <- function() {
+  df <- data.frame(
+    grp = c("X", "X", "X", "Y", "Y", "Z", "Z", "Z"),
+    kw  = c("A,B", "B,C", "A,B,C", "A,B", "B,C,D", "A,C", "C,D", "A,B,D"),
+    stringsAsFactors = FALSE
+  )
+  cooccurrence(df, field = "kw", sep = ",", split_by = "grp")
+}
+
+test_that("split_by summary reports NA for undefined pooled metrics", {
+  s <- .co_summary_data(.split_fixture())
+  expect_true(s$is_split)
+  ## Pooling one network per group makes these undefined, not merely large.
+  expect_true(is.na(s$density))
+  expect_true(is.na(s$mean_degree))
+  expect_true(is.na(s$possible_edges))
+})
+
+test_that("non-split summary still reports pooled metrics", {
+  s <- .co_summary_data(cooccurrence(.test_list))
+  expect_false(s$is_split)
+  expect_false(is.na(s$density))
+  expect_false(is.na(s$mean_degree))
+  expect_false(is.na(s$possible_edges))
+  expect_lte(s$density, 1)
+})
+
+test_that("density never exceeds 1 and degree never exceeds n - 1", {
+  for (res in list(cooccurrence(.test_list), cooccurrence(.test_list,
+                                                          similarity = "jaccard"))) {
+    s <- .co_summary_data(res)
+    expect_lte(s$density, 1)
+    expect_lte(max(s$nodes$degree), s$n_nodes - 1L)
+  }
+})
+
+test_that("split_by print omits density and top nodes", {
+  out <- capture.output(print(.split_fixture()))
+  expect_false(any(grepl("density", out)))
+  expect_false(any(grepl("top nodes", out)))
+  expect_true(any(grepl("split_by: grp", out)))
+})
+
+test_that("split_by summary print omits density but keeps group table", {
+  out <- capture.output(summary(.split_fixture()))
+  expect_false(any(grepl("^Density", out)))
+  expect_false(any(grepl("^Mean degree", out)))
+  expect_false(any(grepl("^Possible edges", out)))
+  expect_false(any(grepl("^Top nodes", out)))
+  expect_true(any(grepl("Groups", out)))
+})
+
+test_that("per-group densities remain valid for split_by", {
+  s <- .co_summary_data(.split_fixture())
+  expect_true(all(s$groups_summary$density <= 1))
+  expect_true(all(s$groups_summary$density >= 0))
+})
+
+# ========================================
+# 21. as.data.frame() on a summary
+# ========================================
+
+test_that("as.data.frame on a summary returns the tidy node table", {
+  s <- .co_summary_data(cooccurrence(.test_list))
+  nodes <- as.data.frame(s)
+  expect_s3_class(nodes, "data.frame")
+  expect_identical(class(nodes), "data.frame")
+  expect_equal(nrow(nodes), s$n_nodes)
+  expect_true(all(c("node", "degree", "strength", "count_strength",
+                    "frequency") %in% names(nodes)))
+})
+
+test_that("as.data.frame(what = 'groups') returns one row per group", {
+  s <- .co_summary_data(.split_fixture())
+  groups <- as.data.frame(s, what = "groups")
+  expect_s3_class(groups, "data.frame")
+  expect_equal(nrow(groups), 3L)
+  expect_setequal(groups$group, c("X", "Y", "Z"))
+})
+
+test_that("as.data.frame(what = 'groups') is empty for an unsplit network", {
+  groups <- as.data.frame(.co_summary_data(cooccurrence(.test_list)),
+                          what = "groups")
+  expect_s3_class(groups, "data.frame")
+  expect_equal(nrow(groups), 0L)
+  expect_true("group" %in% names(groups))
+})
+
+test_that("as.data.frame rejects an unknown 'what'", {
+  s <- .co_summary_data(cooccurrence(.test_list))
+  expect_error(as.data.frame(s, what = "nope"))
+})
+
+test_that("subset() on a split result keeps a printable cooccurrence", {
+  one <- subset(.split_fixture(), group == "X")
+  expect_true(all(one$group == "X"))
+  expect_gt(nrow(one), 0L)
+  expect_no_error(capture.output(print(one)))
+})
+
+
+# ========================================
+# 22. Unknown arguments are rejected
+# ========================================
+
+test_that("a misspelled argument errors instead of silently changing results", {
+  expect_error(cooccurrence(.test_list, simliarity = "jaccard"),
+               "Unknown argument")
+  expect_error(cooccurrence(.test_list, windwo = 2), "Unknown argument")
+  ## The bug this guards: the typo used to fall through to raw counts.
+  expect_false(identical(
+    as.data.frame(cooccurrence(.test_list, similarity = "jaccard"))$weight,
+    as.data.frame(cooccurrence(.test_list))$weight
+  ))
+})
+
+test_that("correctly spelled arguments still work", {
+  expect_s3_class(cooccurrence(.test_list, similarity = "jaccard"),
+                  "cooccurrence")
+})
+
+# ========================================
+# 23. vars = explicit indicator columns
+# ========================================
+
+.onehot_df <- function() {
+  data.frame(id = c("d1", "d2", "d3"),
+             A = c(1, 0, 1), B = c(1, 1, 0), C = c(0, 1, 1),
+             stringsAsFactors = FALSE)
+}
+
+test_that("vars selects indicator columns and ignores id columns", {
+  res <- cooccurrence(.onehot_df(), vars = c("A", "B", "C"))
+  expect_s3_class(res, "cooccurrence")
+  expect_setequal(attr(res, "items"), c("A", "B", "C"))
+  expect_false("id" %in% attr(res, "items"))
+})
+
+test_that("vars gives the same answer as the bare binary matrix", {
+  bare <- data.frame(A = c(1, 0, 1), B = c(1, 1, 0), C = c(0, 1, 1))
+  expect_equal(as.data.frame(cooccurrence(.onehot_df(), vars = c("A","B","C"))),
+               as.data.frame(cooccurrence(bare)))
+})
+
+test_that("logical indicator columns are accepted", {
+  lg <- data.frame(A = c(TRUE, FALSE, TRUE), B = c(TRUE, TRUE, FALSE),
+                   C = c(FALSE, TRUE, TRUE))
+  num <- data.frame(A = c(1, 0, 1), B = c(1, 1, 0), C = c(0, 1, 1))
+  ## auto-detected without vars, and identical to the numeric encoding
+  expect_equal(as.data.frame(cooccurrence(lg)),
+               as.data.frame(cooccurrence(num)))
+  expect_equal(as.data.frame(cooccurrence(lg, vars = c("A","B","C"))),
+               as.data.frame(cooccurrence(num)))
+})
+
+test_that("count columns are read as presence", {
+  counts <- data.frame(doc = 1:3, A = c(2, 0, 5), B = c(1, 3, 0),
+                       C = c(0, 1, 4))
+  binary <- data.frame(A = c(1, 0, 1), B = c(1, 1, 0), C = c(0, 1, 1))
+  expect_equal(as.data.frame(cooccurrence(counts, vars = c("A","B","C"))),
+               as.data.frame(cooccurrence(binary)))
+})
+
+test_that("NA in an indicator table is treated as absent, not an error", {
+  na_df <- data.frame(A = c(1, NA, 1), B = c(1, 1, 0), C = c(0, 1, 1))
+  zero_df <- data.frame(A = c(1, 0, 1), B = c(1, 1, 0), C = c(0, 1, 1))
+  expect_no_error(cooccurrence(na_df))
+  expect_equal(as.data.frame(cooccurrence(na_df)),
+               as.data.frame(cooccurrence(zero_df)))
+  expect_equal(as.data.frame(cooccurrence(na_df, vars = c("A","B","C"))),
+               as.data.frame(cooccurrence(zero_df)))
+})
+
+test_that("vars validates its input", {
+  d <- .onehot_df()
+  expect_error(cooccurrence(d, vars = c("A", "nope")), "not found")
+  expect_error(cooccurrence(d, vars = c("id", "A")), "not numeric or logical")
+  expect_error(cooccurrence(d, vars = "A"), "at least two")
+  expect_error(cooccurrence(d, vars = c("A", "B"), field = "id"),
+               "cannot be combined")
+  expect_error(cooccurrence(list(c("A", "B")), vars = c("A", "B")),
+               "data frame or matrix")
+})
+
+test_that("negative values in vars columns are rejected", {
+  d <- data.frame(A = c(1, -1), B = c(1, 1))
+  expect_error(cooccurrence(d, vars = c("A", "B")), "non-negative")
+})
+
+test_that("vars composes with similarity, split_by and top_n", {
+  d <- data.frame(grp = c("x", "x", "y", "y"),
+                  A = c(1, 1, 1, 0), B = c(1, 0, 1, 1), C = c(0, 1, 1, 1))
+  res <- cooccurrence(d, vars = c("A", "B", "C"), similarity = "jaccard",
+                      split_by = "grp")
+  expect_true("group" %in% names(res))
+  expect_setequal(unique(res$group), c("x", "y"))
+  expect_equal(nrow(cooccurrence(d, vars = c("A","B","C"), top_n = 2)), 2L)
+})
+
+test_that("window is rejected for indicator tables", {
+  expect_error(cooccurrence(.onehot_df(), vars = c("A","B","C"), window = 2),
+               "no within-row order")
+})
+
+# ========================================
+# 24. nestimate_data input
+# ========================================
+
+test_that("a nestimate_data object is unwrapped instead of silently mangled", {
+  skip_if_not_installed("Nestimate")
+  ev <- data.frame(
+    student = rep(c("s1", "s2"), each = 3),
+    code = c("read", "write", "read", "test", "write", "read"),
+    timestamp = as.POSIXct("2026-01-01") + c(0, 60, 120, 0, 30, 90),
+    stringsAsFactors = FALSE
+  )
+  p <- Nestimate::prepare(ev, actor = "student", action = "code",
+                          time = "timestamp")
+  res <- cooccurrence(p)
+  ## Items must be the actual states, not stringified list internals.
+  expect_setequal(attr(res, "items"), c("read", "test", "write"))
+  ## Identical to unwrapping by hand.
+  expect_equal(as.data.frame(res),
+               as.data.frame(cooccurrence(p$sequence_data, field = "all")))
+})
+
+test_that("nestimate_data composes with window", {
+  skip_if_not_installed("Nestimate")
+  ev <- data.frame(
+    student = rep(c("s1", "s2"), each = 3),
+    code = c("read", "write", "test", "test", "write", "read"),
+    timestamp = as.POSIXct("2026-01-01") + c(0, 60, 120, 0, 30, 90),
+    stringsAsFactors = FALSE
+  )
+  p <- Nestimate::prepare(ev, actor = "student", action = "code",
+                          time = "timestamp")
+  expect_equal(as.data.frame(cooccurrence(p, window = 2)),
+               as.data.frame(cooccurrence(p$sequence_data, field = "all",
+                                          window = 2)))
+})
+
+
+# ========================================
+# 25. Raw event-log input (action/actor/time)
+# ========================================
+
+.event_fixture <- function() {
+  data.frame(
+    student = rep(c("s1", "s2", "s3"), each = 6),
+    code = c("read", "write", "read", "test", "write", "read",
+             "read", "read", "test", "write", "test", "read",
+             "write", "test", "read", "read", "write", "test"),
+    stamp = as.POSIXct("2026-01-01 09:00:00") +
+      c(0, 60, 120, 5000, 5060, 5120,
+        0, 30, 90, 150, 210, 270,
+        0, 45, 90, 20000, 20060, 20120),
+    stringsAsFactors = FALSE
+  )
+}
+
+test_that("a raw event log can be passed directly", {
+  skip_if_not_installed("Nestimate")
+  res <- cooccurrence(.event_fixture(), actor = "student", action = "code",
+                      time = "stamp")
+  expect_s3_class(res, "cooccurrence")
+  expect_setequal(attr(res, "items"), c("read", "test", "write"))
+})
+
+test_that("raw event input equals the manual prepare() route", {
+  skip_if_not_installed("Nestimate")
+  ev <- .event_fixture()
+  p <- Nestimate::prepare(ev, actor = "student", action = "code",
+                          time = "stamp")
+  expect_equal(
+    as.data.frame(cooccurrence(ev, actor = "student", action = "code",
+                               time = "stamp")),
+    as.data.frame(cooccurrence(p$sequence_data, field = "all"))
+  )
+})
+
+test_that("time_threshold controls how sessions are split", {
+  skip_if_not_installed("Nestimate")
+  ev <- .event_fixture()
+  tight <- cooccurrence(ev, actor = "student", action = "code",
+                        time = "stamp", time_threshold = 900)
+  loose <- cooccurrence(ev, actor = "student", action = "code",
+                        time = "stamp", time_threshold = Inf)
+  ## Gaps split s1 and s3 into two sessions each at 900s; Inf keeps 3.
+  expect_equal(attr(tight, "n_transactions"), 5L)
+  expect_equal(attr(loose, "n_transactions"), 3L)
+})
+
+test_that("raw event input works without a time column", {
+  skip_if_not_installed("Nestimate")
+  res <- cooccurrence(.event_fixture(), actor = "student", action = "code")
+  expect_s3_class(res, "cooccurrence")
+  expect_equal(attr(res, "n_transactions"), 3L)
+})
+
+test_that("raw event input composes with window and similarity", {
+  skip_if_not_installed("Nestimate")
+  res <- cooccurrence(.event_fixture(), actor = "student", action = "code",
+                      time = "stamp", window = 2, similarity = "jaccard")
+  expect_s3_class(res, "cooccurrence")
+  expect_true(all(res$weight <= 1))
+  expect_equal(attr(res, "similarity"), "jaccard")
+})
+
+test_that("event-log arguments are validated", {
+  skip_if_not_installed("Nestimate")
+  ev <- .event_fixture()
+  expect_error(cooccurrence(ev, actor = "student"), "require `action`")
+  expect_error(cooccurrence(ev, time = "stamp"), "require `action`")
+  expect_error(cooccurrence(ev, actor = "student", action = "nope"),
+               "must name a single column")
+  expect_error(cooccurrence(ev, actor = "zzz", action = "code"), "not found")
+  expect_error(cooccurrence(ev, action = "code", session = "zzz"), "not found")
+  expect_error(cooccurrence(list(c("a", "b")), action = "code"),
+               "data frame of event records")
+})
+
+
+# ========================================
+# 26. vars accepts flexible column specifications
+# ========================================
+
+.spec_df <- function() {
+  data.frame(id = c("d1", "d2", "d3"),
+             A = c(1, 0, 1), B = c(1, 1, 0), C = c(0, 1, 1), D = c(1, 1, 1),
+             note = c("x", "y", "z"),
+             stringsAsFactors = FALSE)
+}
+
+test_that("vars accepts a bare column range", {
+  expect_setequal(attr(cooccurrence(.spec_df(), vars = A:D), "items"),
+                  c("A", "B", "C", "D"))
+})
+
+test_that("vars accepts bare names via c()", {
+  expect_setequal(attr(cooccurrence(.spec_df(), vars = c(A, B, C)), "items"),
+                  c("A", "B", "C"))
+})
+
+test_that("vars accepts positional indices", {
+  expect_setequal(attr(cooccurrence(.spec_df(), vars = 2:5), "items"),
+                  c("A", "B", "C", "D"))
+})
+
+test_that("vars accepts negative selection", {
+  expect_setequal(attr(cooccurrence(.spec_df(), vars = -c(id, note)), "items"),
+                  c("A", "B", "C", "D"))
+})
+
+test_that("vars accepts a logical mask", {
+  mask <- c(FALSE, TRUE, TRUE, TRUE, TRUE, FALSE)
+  expect_setequal(attr(cooccurrence(.spec_df(), vars = mask), "items"),
+                  c("A", "B", "C", "D"))
+})
+
+test_that("vars accepts a character vector held in a variable", {
+  states <- c("A", "B", "C")
+  expect_setequal(attr(cooccurrence(.spec_df(), vars = states), "items"),
+                  c("A", "B", "C"))
+})
+
+test_that("all vars spellings give the same network", {
+  d <- .spec_df()
+  target <- as.data.frame(cooccurrence(d, vars = c("A", "B", "C", "D")))
+  expect_equal(as.data.frame(cooccurrence(d, vars = A:D)), target)
+  expect_equal(as.data.frame(cooccurrence(d, vars = 2:5)), target)
+  expect_equal(as.data.frame(cooccurrence(d, vars = -c(id, note))), target)
+})
+
+test_that("bad vars specifications are rejected clearly", {
+  d <- .spec_df()
+  expect_error(cooccurrence(d, vars = A:zzz), "could not be resolved")
+  expect_error(cooccurrence(d, vars = 2:99), "out of range")
+  expect_error(cooccurrence(d, vars = c(-1, 2)), "mix positive and negative")
+  expect_error(cooccurrence(d, vars = A), "at least two")
+  expect_error(cooccurrence(d, vars = c(id, A)), "not numeric or logical")
+  expect_error(cooccurrence(d, vars = c(TRUE, FALSE)), "one entry per column")
+})
+
+
+# ========================================
+# 27. Findings from the Codex audit
+# ========================================
+
+test_that("the CRAN 0.1.1 positional argument prefix is preserved", {
+  ## Positional calls written against 0.1.1 must keep their meaning.
+  expect_identical(
+    names(formals(cooccurrence))[1:13],
+    c("data", "field", "by", "sep", "weight_by", "split_by", "similarity",
+      "counting", "scale", "threshold", "min_occur", "top_n", "output")
+  )
+  d <- data.frame(item = c("a", "a", "b"), doc = c("d1", "d2", "d1"),
+                  w = c(1, 2, 1), stringsAsFactors = FALSE)
+  expect_no_error(cooccurrence(d, "item", "doc", NULL, "w"))
+  expect_equal(as.data.frame(cooccurrence(d, "item", "doc", NULL, "w")),
+               as.data.frame(cooccurrence(d, field = "item", by = "doc",
+                                          weight_by = "w")))
+})
+
+test_that("a repeated column in vars does not inflate weight or count", {
+  one_row <- data.frame(A = 1, B = 1)
+  expect_equal(as.data.frame(cooccurrence(one_row, vars = c("A", "A", "B"))),
+               as.data.frame(cooccurrence(one_row, vars = c("A", "B"))))
+  d <- data.frame(A = c(1, 0), B = c(1, 1), C = c(0, 1))
+  expect_equal(as.data.frame(cooccurrence(d, vars = c(A, B, C, A))),
+               as.data.frame(cooccurrence(d, vars = c(A, B, C))))
+})
+
+test_that("per-group density counts nodes isolated within their group", {
+  ## Group x holds edge A-B plus isolated C: 3 nodes, 1 of 3 possible edges.
+  g <- data.frame(grp = c("x", "x", "y", "y"),
+                  kw = c("A,B", "C", "D,E", "F"), stringsAsFactors = FALSE)
+  gs <- as.data.frame(summary(cooccurrence(g, field = "kw", sep = ",",
+                                           split_by = "grp")),
+                      what = "groups")
+  expect_equal(gs$n_nodes, c(3L, 3L))
+  expect_equal(gs$density, c(1/3, 1/3))
+  expect_true(all(gs$density <= 1))
+})
+
+test_that("a split result does not inherit the first group's matrix", {
+  g <- data.frame(grp = c("x", "x", "y", "y"),
+                  kw = c("A,B", "A,B", "D,E", "D,E"), stringsAsFactors = FALSE)
+  sp <- cooccurrence(g, field = "kw", sep = ",", split_by = "grp")
+  ## Previously rbind() carried group x's matrix/items onto the whole frame,
+  ## so as_matrix() silently described only group x.
+  expect_null(attr(sp, "matrix"))
+  expect_null(attr(sp, "items"))
+  expect_null(attr(sp, "frequencies"))
+})
+
+test_that("the groups attribute lists only groups that produced edges", {
+  ## Group "z" has a single item and yields no edges.
+  g <- data.frame(grp = c("x", "x", "z"), kw = c("A,B", "A,B", "Q"),
+                  stringsAsFactors = FALSE)
+  sp <- cooccurrence(g, field = "kw", sep = ",", split_by = "grp")
+  expect_setequal(attr(sp, "groups"), unique(sp$group))
+  expect_false("z" %in% attr(sp, "groups"))
+})
+
+
+# ========================================
+# 28. Audit findings: engine consistency
+# ========================================
+
+test_that("weight_by composes with min_occur without crashing", {
+  w <- data.frame(item = c("A", "A", "B", "C"), doc = c("d1", "d2", "d1", "d2"),
+                  w = c(1, 1, 1, 1), stringsAsFactors = FALSE)
+  ## The binary companion matrix used to keep unfiltered column indices
+  ## against filtered dims: "'dims' must contain all (i,j) pairs".
+  expect_no_error(cooccurrence(w, field = "item", by = "doc",
+                               weight_by = "w", min_occur = 2))
+})
+
+test_that("min_occur support counts distinct documents, not rows", {
+  ## A appears twice but in ONE document, so it fails min_occur = 2.
+  dup <- data.frame(item = c("A", "A", "B", "B"),
+                    doc = c("d1", "d1", "d1", "d2"),
+                    w = c(1, 1, 1, 1), stringsAsFactors = FALSE)
+  res <- try(cooccurrence(dup, field = "item", by = "doc", weight_by = "w",
+                          min_occur = 2), silent = TRUE)
+  if (!inherits(res, "try-error")) expect_false("A" %in% attr(res, "items"))
+})
+
+test_that("the stored matrix agrees with the filtered edge list", {
+  tx <- list(c("A", "B", "C"), c("A", "B"), c("B", "C"))
+  r1 <- cooccurrence(tx, top_n = 1)
+  expect_equal(sum(as_matrix(r1) != 0) / 2, nrow(r1))
+  r2 <- cooccurrence(tx, similarity = "jaccard", threshold = 0.6)
+  expect_equal(sum(as_matrix(r2) != 0) / 2, nrow(r2))
+})
+
+test_that("threshold = 0 does not discard negative weights", {
+  ## z-score centres weights on zero; the default must not halve the network.
+  res <- cooccurrence(.test_list, scale = "zscore", threshold = 0)
+  vals <- res$weight[res$weight != 0]
+  if (length(vals) > 1) expect_equal(mean(vals), 0, tolerance = 1e-10)
+  expect_true(any(res$weight < 0))
+})
+
+test_that("a full-length window matches unwindowed attention", {
+  ## embed() emits each window reversed; attention reads positional gaps,
+  ## so an unreversed window silently mirrored the decay.
+  seqs <- list(c("A", "B", "C", "A"))
+  expect_equal(
+    as.data.frame(cooccurrence(seqs, counting = "attention", window = 4)),
+    as.data.frame(cooccurrence(seqs, counting = "attention"))
+  )
+  expect_equal(
+    as.data.frame(cooccurrence(list(c("A", "B", "C")), counting = "attention",
+                               window = 3)),
+    as.data.frame(cooccurrence(list(c("A", "B", "C")), counting = "attention"))
+  )
+})
+
+test_that("windowed set counting is unaffected by the window orientation", {
+  seqs <- list(c("A", "B", "C", "D"))
+  res <- cooccurrence(seqs, window = 2)
+  expect_setequal(paste(res$from, res$to), c("A B", "B C", "C D"))
+})
+
+test_that("relative keeps both directions in the stored matrix", {
+  tx <- list(c("A", "B", "C"), c("A", "B"), c("B", "C"))
+  m <- as_matrix(cooccurrence(tx, similarity = "relative"))
+  expect_false(isTRUE(all.equal(m, t(m))))
+  expect_equal(unname(rowSums(m)[rowSums(m) > 0]),
+               rep(1, sum(rowSums(m) > 0)))
+})
+
+test_that("gephi output works with the converters", {
+  skip_if_not_installed("igraph")
+  tx <- list(c("A", "B", "C"), c("A", "B"), c("B", "C"))
+  gph <- cooccurrence(tx, output = "gephi")
+  expect_no_error(as_igraph(gph))
+  expect_no_error(as_matrix(gph))
+  expect_equal(igraph::ecount(as_igraph(gph)), nrow(gph))
+})
+
+test_that("a failing group warns instead of vanishing silently", {
+  ## An edgeless group is expected and stays quiet.
+  g <- data.frame(grp = c("x", "x", "y"), kw = c("A,B", "A,B", "Q"),
+                  stringsAsFactors = FALSE)
+  expect_no_warning(cooccurrence(g, field = "kw", sep = ",", split_by = "grp"))
 })

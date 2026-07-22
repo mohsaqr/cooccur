@@ -3,25 +3,16 @@
 \name{as_cograph}
 \alias{as_cograph}
 \alias{as_cograph.cooccurrence}
-\alias{as_cograph.co_bootstrap}
 \title{Convert to cograph network}
 \usage{
 as_cograph(x, ...)
 
 \method{as_cograph}{cooccurrence}(x, ...)
-
-\method{as_cograph}{co_bootstrap}(x, stable_only = TRUE, weight = c("boot_mean", "weight"), ...)
 }
 \arguments{
-\item{x}{A \code{co_bootstrap} result.}
+\item{x}{A \code{cooccurrence} data frame.}
 
 \item{...}{Ignored.}
-
-\item{stable_only}{Logical. Keep only \code{stable} (credible) edges. Default
-\code{TRUE}.}
-
-\item{weight}{Character. Edge weight to carry: \code{"boot_mean"} (bootstrap
-mean, default) or \code{"weight"} (observed).}
 }
 \value{
 A \code{cograph_network} object.
@@ -30,11 +21,6 @@ A \code{cograph_network} object.
 Creates a \code{cograph_network} object from a \code{cooccurrence}
 edge list, compatible with \code{cograph::splot()} and other cograph
 functions.
-
-Builds a \code{cograph_network} from a \code{\link{co_bootstrap}} result so
-cograph can plot it directly (e.g. \code{cograph::splot()}). By default only
-\code{stable} edges are kept (the credible network) and edges carry the
-bootstrap mean weight, so the plotted network is entirely bootstrap-derived.
 }
 \examples{
 res <- cooccurrence(list(c("A","B","C"), c("B","C"), c("A","C")))

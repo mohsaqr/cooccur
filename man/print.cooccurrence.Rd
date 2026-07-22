@@ -17,7 +17,7 @@
 Invisibly returns \code{x}.
 }
 \description{
-Print a cooccurrence edge list
+Prints a compact network diagnostic header followed by an edge preview.
 }
 \examples{
 res <- cooccurrence(list(c("A","B","C"), c("B","C"), c("A","C")))

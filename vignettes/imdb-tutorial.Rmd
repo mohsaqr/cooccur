@@ -216,15 +216,22 @@ co(movies, field = "genres", sep = ",",
    min_occur = 5, top_n = 5)
 ```
 
-Individual groups can be extracted by filtering the group column:
+Individual groups can be extracted with `subset()` on the group column:
 
 ```{r filter-decade}
 decades <- co(movies, field = "genres", sep = ",",
               split_by = "decade", similarity = "jaccard",
               min_occur = 5, top_n = 5)
 
-decades[decades$group == "2010s", ]
+subset(decades, group == "2010s")
+```
 
+Group-level network metrics come from `summary()` as a tidy data frame:
+
+```{r decade-groups}
+decade_summary <- summary(decades)
+
+as.data.frame(decade_summary, what = "groups")
 ```
 
  - `split_by = "rating_band"` — Splitting by rating band reveals whether highly rated movies have different genre co-occurrence patterns than average-rated ones. *Documentary*–*Music* is the strongest pair among top-rated movies, while *Adventure*–*Animation* leads among the 7–7.9 band.

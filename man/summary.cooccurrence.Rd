@@ -12,12 +12,24 @@
 \item{...}{Ignored.}
 }
 \value{
-Invisibly returns \code{object}.
+Invisibly returns a \code{summary.cooccurrence} object with network,
+node, and group-level metrics.
 }
 \description{
-Summarise a cooccurrence network
+Node- and group-level metrics are available as tidy data frames via
+\code{\link[base]{as.data.frame}}.
+}
+\details{
+For a network built with \code{split_by}, the returned frame stacks one
+network per group, so a node pair can occur once per group. Pooled
+simple-graph metrics (\code{density}, \code{mean_degree},
+\code{possible_edges}) are undefined in that case and reported as
+\code{NA}; the per-group table carries the correct values.
 }
 \examples{
 res <- cooccurrence(list(c("A","B","C"), c("B","C"), c("A","C")))
 summary(res)
+
+# Node-level metrics as a tidy data frame
+as.data.frame(summary(res))
 }

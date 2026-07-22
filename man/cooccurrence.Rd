@@ -12,20 +12,26 @@ cooccurrence(
   sep = NULL,
   weight_by = NULL,
   split_by = NULL,
-  aggregate_by = NULL,
-  aggregate = c("sum", "mean", "min", "max"),
-  keep_transactions = TRUE,
-  block = NULL,
-  window = NULL,
   similarity = c("none", "jaccard", "cosine", "inclusion", "association", "dice",
     "equivalence", "relative"),
   counting = c("full", "fractional", "attention"),
-  lambda = 1,
   scale = NULL,
   threshold = 0,
   min_occur = 1L,
   top_n = NULL,
   output = c("default", "gephi", "igraph", "cograph", "matrix"),
+  vars = NULL,
+  actor = NULL,
+  action = NULL,
+  time = NULL,
+  session = NULL,
+  order = NULL,
+  time_threshold = 900,
+  group = NULL,
+  aggregate_by = NULL,
+  aggregate = c("sum", "mean", "min", "max"),
+  window = NULL,
+  lambda = 1,
   ...
 )
 
@@ -36,20 +42,26 @@ co(
   sep = NULL,
   weight_by = NULL,
   split_by = NULL,
-  aggregate_by = NULL,
-  aggregate = c("sum", "mean", "min", "max"),
-  keep_transactions = TRUE,
-  block = NULL,
-  window = NULL,
   similarity = c("none", "jaccard", "cosine", "inclusion", "association", "dice",
     "equivalence", "relative"),
   counting = c("full", "fractional", "attention"),
-  lambda = 1,
   scale = NULL,
   threshold = 0,
   min_occur = 1L,
   top_n = NULL,
   output = c("default", "gephi", "igraph", "cograph", "matrix"),
+  vars = NULL,
+  actor = NULL,
+  action = NULL,
+  time = NULL,
+  session = NULL,
+  order = NULL,
+  time_threshold = 900,
+  group = NULL,
+  aggregate_by = NULL,
+  aggregate = c("sum", "mean", "min", "max"),
+  window = NULL,
+  lambda = 1,
   ...
 )
 }
@@ -58,9 +70,15 @@ co(
 \itemize{
 \item A \code{data.frame} with a delimited column (\code{field} + \code{sep}).
 \item A \code{data.frame} in long/bipartite format (\code{field} + \code{by}).
-\item A binary (0/1) \code{data.frame} or \code{matrix} (auto-detected).
+\item A binary (0/1 or \code{TRUE}/\code{FALSE}) \code{data.frame} or
+\code{matrix} (auto-detected).
+\item A one-hot or count table with \code{vars} naming the indicator
+columns; other columns (ids, metadata) are ignored.
 \item A wide sequence \code{data.frame} or \code{matrix} (non-binary).
 \item A \code{list} of character vectors (each element is a transaction).
+\item A \code{nestimate_data} object from
+\code{Nestimate::prepare()}; its \code{sequence_data} is used, so
+event logs can be sessionised there and networked here.
 }}
 
 \item{field}{Character. The entity column --- determines what the nodes are.
@@ -88,38 +106,6 @@ models.}
 by before computing co-occurrence. A separate network is computed per
 group and the results are combined into a single data frame with an
 additional \code{group} column. Only works with data.frame inputs.}
-
-\item{aggregate_by}{Character or \code{NULL}. Column name to group
-the data by before computing co-occurrence. For each unique value,
-the per-group network is computed (with the chosen
-\code{similarity}, \code{counting}, \code{scale}, \code{window});
-the per-group edge weights are then combined across groups via
-\code{aggregate} into ONE final network. Differs from
-\code{split_by}, which keeps groups separate. Cannot be combined
-with \code{split_by}. Only applies to data frame inputs.}
-
-\item{aggregate}{Character. How to combine edge weights across
-groups when \code{aggregate_by} is used: \code{"sum"} (default),
-\code{"mean"}, \code{"min"}, or \code{"max"}. The \code{count}
-column is always summed. \code{threshold} and \code{top_n} are
-applied AFTER aggregation.}
-
-\item{keep_transactions}{Logical. When \code{TRUE}, retain the
-integer-encoded post-\code{min_occur} transaction data as attributes
-for confirmatory procedures such as \code{\link{co_bootstrap}}.}
-
-\item{block}{Character column name or vector, or \code{NULL}. Optional
-block identifier aligned to the input rows. Retained as \code{block_id}
-on the returned object when \code{keep_transactions = TRUE}.}
-
-\item{window}{Integer or \code{NULL}. Sliding-window size for
-categorical time-series / ordered-sequence input. When set to an
-integer \eqn{w \ge 2}, every window of \code{w} consecutive
-positions in a sequence becomes a mini-transaction; states inside
-the same window co-occur. Sequences shorter than \code{w}
-contribute no transactions. Only applies to ordered formats:
-wide (\code{field = "all"}) and \code{list}. Default \code{NULL}
-(whole sequence treated as one transaction --- bag of states).}
 
 \item{similarity}{Character. Similarity measure:
 \describe{
@@ -154,11 +140,6 @@ input). The decay rate \eqn{\lambda} is controlled by the
 \code{lambda} argument.}
 }}
 
-\item{lambda}{Numeric. Decay rate for \code{counting = "attention"}.
-Higher \code{lambda} → slower decay → distant pairs still
-contribute. Default \code{1.0}, matching the \pkg{tna} package.
-Ignored for other counting methods.}
-
 \item{scale}{Character or \code{NULL}. Optional scaling applied to weights
 after similarity normalization:
 \describe{
@@ -172,8 +153,11 @@ after similarity normalization:
 \item{\code{"proportion"}}{Divide by sum of all weights.}
 }}
 
-\item{threshold}{Numeric. Minimum edge weight to retain. Applied after
-similarity and scaling. Default 0.}
+\item{threshold}{Numeric. Minimum edge weight to retain, applied after
+similarity and scaling. The default \code{0} means no filtering rather
+than "drop negative weights", so centring scalings such as
+\code{scale = "zscore"} keep their negative half. Pass a positive
+value to filter.}
 
 \item{min_occur}{Integer. Minimum entity frequency. Entities appearing in
 fewer than \code{min_occur} transactions are dropped. Default 1.}
@@ -191,6 +175,78 @@ Default \code{NULL} (all edges).}
 \item{\code{"cograph"}}{Returns a \code{cograph_network} object directly.}
 \item{\code{"matrix"}}{Returns the square co-occurrence matrix.}
 }}
+
+\item{vars}{Column specification or \code{NULL}. The indicator (one-hot)
+columns, one column per item. Resolved like \code{select} in
+\code{\link[base]{subset}}, so all of these work: a bare range
+(\code{vars = A:D}), bare names (\code{vars = c(A, B, C)}), positions
+(\code{vars = 2:5}), negative selection (\code{vars = -c(id, note)}),
+a logical mask, or a character vector. Every other column --- ids,
+timestamps, metadata --- is ignored, so a one-hot table that also
+carries identifier columns needs no pre-processing. Cell values are
+read as presence: any non-zero, non-\code{NA} value marks the item
+present, so count tables such as document-term matrices work as well
+as \code{0}/\code{1} and \code{TRUE}/\code{FALSE}. \code{NA} counts as
+absent. Cannot be combined with \code{field}, \code{by}, or
+\code{sep}. A purely binary table with no extra columns is still
+auto-detected without \code{vars}.}
+
+\item{actor}{Character vector or \code{NULL}. Column(s) identifying who
+performed the action. When \code{NULL}, all rows are treated as one
+actor. Only used with \code{action}.}
+
+\item{action}{Character or \code{NULL}. Column holding the event/state
+for raw event-log input. When supplied, the log is sessionised into
+ordered sequences first and each session becomes one transaction, so
+\code{window} and \code{counting = "attention"} apply. Requires the
+\pkg{Nestimate} package, which performs the sessionisation.}
+
+\item{time}{Character or \code{NULL}. Timestamp column. Accepts ISO8601,
+Unix time, and common date/time formats. When \code{NULL}, row order
+defines the sequence. Only used with \code{action}.}
+
+\item{session}{Character vector or \code{NULL}. Column(s) giving an
+explicit session grouping. Combined with \code{time}, sessions are
+further split on time gaps. Only used with \code{action}.}
+
+\item{order}{Character or \code{NULL}. Column used to break ties when
+timestamps are identical. Only used with \code{action}.}
+
+\item{time_threshold}{Numeric. Maximum gap in seconds between consecutive
+events before a new session starts. Use \code{Inf} to keep each actor
+as a single sequence regardless of gaps. Default 900 (15 minutes).
+Only used with \code{action} and \code{time}.}
+
+\item{group}{Character or \code{NULL}. Alias for \code{split_by}.}
+
+\item{aggregate_by}{Character or \code{NULL}. Column name to group
+the data by before computing co-occurrence. For each unique value,
+the per-group network is computed (with the chosen
+\code{similarity}, \code{counting}, \code{scale}, \code{window});
+the per-group edge weights are then combined across groups via
+\code{aggregate} into ONE final network. Differs from
+\code{split_by}, which keeps groups separate. Cannot be combined
+with \code{split_by}. Only applies to data frame inputs.}
+
+\item{aggregate}{Character. How to combine edge weights across
+groups when \code{aggregate_by} is used: \code{"sum"} (default),
+\code{"mean"}, \code{"min"}, or \code{"max"}. The \code{count}
+column is always summed. \code{threshold} and \code{top_n} are
+applied AFTER aggregation.}
+
+\item{window}{Integer or \code{NULL}. Sliding-window size for
+categorical time-series / ordered-sequence input. When set to an
+integer \eqn{w \ge 2}, every window of \code{w} consecutive
+positions in a sequence becomes a mini-transaction; states inside
+the same window co-occur. Sequences shorter than \code{w}
+contribute no transactions. Only applies to ordered formats:
+wide (\code{field = "all"}) and \code{list}. Default \code{NULL}
+(whole sequence treated as one transaction --- bag of states).}
+
+\item{lambda}{Numeric. Decay rate for \code{counting = "attention"}.
+Higher \code{lambda} → slower decay → distant pairs still
+contribute. Default \code{1.0}, matching the \pkg{tna} package.
+Ignored for other counting methods.}
 
 \item{...}{Currently unused.}
 }
@@ -227,6 +283,7 @@ cooccurrence(df, field = "keywords", sep = ";")
 # Split by a grouping variable
 df$year <- c(2020, 2020, 2021, 2021)
 cooccurrence(df, field = "keywords", sep = ";", split_by = "year")
+cooccurrence(df, field = "keywords", sep = ";", group = "year")
 
 # List of transactions with Jaccard similarity
 cooccurrence(list(c("A","B","C"), c("B","C"), c("A","C")),
@@ -251,6 +308,25 @@ theta <- data.frame(
   prob  = c(0.6, 0.3, 0.1, 0.4, 0.6, 0.5, 0.5)
 )
 cooccurrence(theta, field = "topic", by = "doc", weight_by = "prob")
+
+# One-hot / indicator table: name the indicator columns, ignore the rest
+onehot <- data.frame(
+  doc = c("d1", "d2", "d3"),
+  A = c(1, 0, 1), B = c(1, 1, 0), C = c(0, 1, 1)
+)
+cooccurrence(onehot, vars = c("A", "B", "C"))
+
+# Raw event log: sessionised on a 15-minute gap, then windowed
+\donttest{
+if (requireNamespace("Nestimate", quietly = TRUE)) {
+  events <- data.frame(
+    student = rep(c("s1", "s2"), each = 3),
+    code    = c("read", "write", "read", "test", "write", "read"),
+    stamp   = as.POSIXct("2026-01-01 09:00:00") + c(0, 60, 120, 0, 30, 90)
+  )
+  cooccurrence(events, actor = "student", action = "code", time = "stamp")
+}
+}
 
 }
 \references{

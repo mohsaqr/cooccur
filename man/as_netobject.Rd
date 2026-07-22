@@ -3,25 +3,16 @@
 \name{as_netobject}
 \alias{as_netobject}
 \alias{as_netobject.cooccurrence}
-\alias{as_netobject.co_bootstrap}
 \title{Convert to Nestimate netobject}
 \usage{
 as_netobject(x, ...)
 
 \method{as_netobject}{cooccurrence}(x, ...)
-
-\method{as_netobject}{co_bootstrap}(x, stable_only = TRUE, weight = c("boot_mean", "weight"), ...)
 }
 \arguments{
 \item{x}{A \code{cooccurrence} data frame.}
 
 \item{...}{Ignored.}
-
-\item{stable_only}{Logical. For a \code{co_bootstrap} result, keep only
-\code{stable} (credible) edges. Default \code{TRUE}.}
-
-\item{weight}{Character. For a \code{co_bootstrap} result, edge weight to
-carry: \code{"boot_mean"} (default) or \code{"weight"}.}
 }
 \value{
 A \code{netobject} with class \code{c("netobject", "cograph_network")}.

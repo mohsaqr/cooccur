@@ -4,13 +4,14 @@
 \alias{plot.cooccurrence}
 \title{Plot a cooccurrence network}
 \usage{
-\method{plot}{cooccurrence}(x, type = c("heatmap", "network"), ...)
+\method{plot}{cooccurrence}(x, type = c("heatmap", "network", "degree"), ...)
 }
 \arguments{
 \item{x}{A \code{cooccurrence} data frame.}
 
-\item{type}{Character. \code{"heatmap"} (default) or \code{"network"}
-(requires \pkg{igraph}).}
+\item{type}{Character. \code{"heatmap"} (default), \code{"network"}
+(requires \pkg{igraph}), or \code{"degree"} for a base-R degree
+distribution bar plot.}
 
 \item{...}{Passed to the plotting function.}
 }
@@ -18,8 +19,8 @@
 Invisibly returns \code{x}.
 }
 \description{
-Plots the co-occurrence matrix as a heatmap. If \pkg{igraph} is available,
-plots a network graph instead.
+Plots the co-occurrence matrix as a heatmap, an \pkg{igraph} network, or a
+base-R degree distribution.
 }
 \examples{
 res <- cooccurrence(list(c("A","B","C"), c("B","C"), c("A","C")))

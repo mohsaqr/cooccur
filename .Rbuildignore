@@ -10,6 +10,7 @@
 ^HANDOFF\.md$
 ^CHANGES\.md$
 ^LEARNINGS\.md$
+^DESIGN-dynalytics-conformance\.md$
 ^tmp$
 ^cran-comments\.md$
 ^tests/testthat/Rplots\.pdf$
