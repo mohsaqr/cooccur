@@ -2093,3 +2093,40 @@ test_that("a failing group warns instead of vanishing silently", {
                   stringsAsFactors = FALSE)
   expect_no_warning(cooccurrence(g, field = "kw", sep = ",", split_by = "grp"))
 })
+
+
+# ========================================
+# 29. Bundled demo dataset supports every grouping
+# ========================================
+
+test_that("demo has multi-genre films so genre x movie yields a network", {
+  expect_true(all(c("movie", "actor", "genre") %in% names(demo)))
+  ## Every film must carry more than one genre, or genres can never
+  ## co-occur within a film.
+  per_movie <- tapply(demo$genre, demo$movie, function(x) length(unique(x)))
+  expect_true(all(per_movie >= 1))
+  expect_true(any(per_movie > 1))
+
+  res <- cooccurrence(demo, field = "genre", by = "movie")
+  expect_gt(nrow(res), 0L)
+  ## Crime and Drama share the most films in this cast.
+  top <- as.data.frame(res)[1, ]
+  expect_setequal(c(top$from, top$to), c("Crime", "Drama"))
+})
+
+test_that("all three demo groupings produce networks", {
+  expect_gt(nrow(cooccurrence(demo, field = "actor", by = "movie")), 0L)
+  expect_gt(nrow(cooccurrence(demo, field = "genre", by = "movie")), 0L)
+  expect_gt(nrow(cooccurrence(demo, field = "actor", by = "genre")), 0L)
+  expect_gt(nrow(cooccurrence(demo, field = "genre", by = "actor")), 0L)
+})
+
+test_that("the demo co-starring network is unchanged", {
+  ## Adding genre rows must not alter the actor network: the long parser
+  ## deduplicates items within a transaction.
+  res <- cooccurrence(demo, field = "actor", by = "movie",
+                      similarity = "jaccard")
+  expect_equal(nrow(res), 43L)
+  expect_equal(length(unique(demo$actor)), 30L)
+  expect_equal(nrow(unique(demo[, c("movie", "actor")])), 34L)
+})

@@ -1,6 +1,6 @@
 Package: cooccure
 Title: Co-Occurrence Network Construction and Manipulation
-Version: 0.3.0
+Version: 0.4.0
 Authors@R: c(
     person("Mohammed", "Saqr", email = "saqr@saqr.me",
            role = c("aut", "cre", "cph")),

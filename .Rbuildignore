@@ -17,3 +17,4 @@
 ^cooccure?_.*\.tar\.gz$
 ^cooccure?\.Rcheck$
 ^sim_network\.R$
+^data-raw$

@@ -2,7 +2,7 @@
 % Please edit documentation in R/methods.R
 \name{summary.cooccurrence}
 \alias{summary.cooccurrence}
-\title{Summarise a cooccurrence network}
+\title{Summarize a cooccurrence network}
 \usage{
 \method{summary}{cooccurrence}(object, ...)
 }

@@ -1,6 +1,5 @@
 al
 Analytics
-Á
 Bache
 Bibliometric
 bibliometrics
@@ -10,6 +9,7 @@ cograph
 Conde
 cooccurrence
 de
+deduplicated
 deduplication
 densifies
 Dice's
@@ -17,6 +17,8 @@ doi
 downweighting
 downweights
 Eck
+edgeless
+errored
 et
 FernUniversität
 frac
@@ -39,15 +41,22 @@ parsers
 Perianes
 Pernas
 Pre
+pre
+reimplemented
 Reingold
 saqr
 scientometric
 Scopus
+Sessionization
+sessionization
+sessionized
 sonsoles
 Springer
 Summarise
 tidygraph
 tna
 TraMineR
+unwindowed
 Waltman
 Wiig
+Á

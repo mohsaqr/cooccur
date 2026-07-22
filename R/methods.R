@@ -235,7 +235,7 @@ print.cooccurrence <- function(x, n = 10L, ...) {
 `%||%` <- function(x, y) if (is.null(x)) y else x
 
 
-#' Summarise a cooccurrence network
+#' Summarize a cooccurrence network
 #'
 #' Node- and group-level metrics are available as tidy data frames via
 #' \code{\link[base]{as.data.frame}}.

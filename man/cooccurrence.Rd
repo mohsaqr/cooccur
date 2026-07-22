@@ -78,7 +78,7 @@ columns; other columns (ids, metadata) are ignored.
 \item A \code{list} of character vectors (each element is a transaction).
 \item A \code{nestimate_data} object from
 \code{Nestimate::prepare()}; its \code{sequence_data} is used, so
-event logs can be sessionised there and networked here.
+event logs can be sessionized there and networked here.
 }}
 
 \item{field}{Character. The entity column --- determines what the nodes are.
@@ -155,7 +155,7 @@ after similarity normalization:
 
 \item{threshold}{Numeric. Minimum edge weight to retain, applied after
 similarity and scaling. The default \code{0} means no filtering rather
-than "drop negative weights", so centring scalings such as
+than "drop negative weights", so centering scalings such as
 \code{scale = "zscore"} keep their negative half. Pass a positive
 value to filter.}
 
@@ -196,10 +196,10 @@ performed the action. When \code{NULL}, all rows are treated as one
 actor. Only used with \code{action}.}
 
 \item{action}{Character or \code{NULL}. Column holding the event/state
-for raw event-log input. When supplied, the log is sessionised into
+for raw event-log input. When supplied, the log is sessionized into
 ordered sequences first and each session becomes one transaction, so
 \code{window} and \code{counting = "attention"} apply. Requires the
-\pkg{Nestimate} package, which performs the sessionisation.}
+\pkg{Nestimate} package, which performs the sessionization.}
 
 \item{time}{Character or \code{NULL}. Timestamp column. Accepts ISO8601,
 Unix time, and common date/time formats. When \code{NULL}, row order
@@ -316,7 +316,7 @@ onehot <- data.frame(
 )
 cooccurrence(onehot, vars = c("A", "B", "C"))
 
-# Raw event log: sessionised on a 15-minute gap, then windowed
+# Raw event log: sessionized on a 15-minute gap, then windowed
 \donttest{
 if (requireNamespace("Nestimate", quietly = TRUE)) {
   events <- data.frame(

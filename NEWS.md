@@ -1,11 +1,11 @@
-# cooccure 0.3.0
+# cooccure 0.4.0
 
 * `cooccurrence()` gains a `window =` parameter for sliding-window
   co-occurrence on ordered sequence input (lists of vectors and wide
   TraMineR-style data frames via `field = "all"`). Each window of
   `w` consecutive positions becomes one transaction; states inside
   the same window co-occur. `window = sequence_length` reduces to
-  the existing bag-of-states behaviour. TraMineR void markers (`NA`,
+  the existing bag-of-states behavior. TraMineR void markers (`NA`,
   `""`, `"%"`, `"*"`, `"NaN"`) are dropped before windowing. Pure
   base R via `embed()`.
 * `cooccurrence()` gains `aggregate_by =` and `aggregate =`
@@ -36,9 +36,9 @@
 * `cooccurrence()` accepts a raw event log directly via `action =`
   (the event column), with optional `actor =`, `time =`, `session =`,
   `order =`, and `time_threshold =` (default 900 seconds). The log is
-  sessionised into ordered sequences and each session becomes one
+  sessionized into ordered sequences and each session becomes one
   transaction, so `window =` and `counting = "attention"` apply.
-  Sessionisation — timestamp parsing and gap splitting — is delegated
+  Sessionization — timestamp parsing and gap splitting — is delegated
   to `Nestimate::prepare()` rather than reimplemented, so `Nestimate`
   is required for this input only.
 * `cooccurrence()` gains `vars =`, naming the indicator (one-hot)
@@ -52,13 +52,13 @@
   such as document-term matrices work alongside `0`/`1` and
   `TRUE`/`FALSE`.
 * Logical (`TRUE`/`FALSE`) indicator tables are now auto-detected;
-  previously only numeric `0`/`1` was recognised.
+  previously only numeric `0`/`1` was recognized.
 * `NA` in an indicator table is treated as absent. It previously
   reached `Matrix::sparseMatrix()` as an `NA` index and failed with an
   internal error.
 * `cooccurrence()` accepts a `nestimate_data` object from
   `Nestimate::prepare()` and uses its `sequence_data`, so event logs
-  can be sessionised by `prepare()` (time gaps, timestamp parsing) and
+  can be sessionized by `prepare()` (time gaps, timestamp parsing) and
   networked here without duplicating that logic. Passing one used to
   fall into the list-of-transactions branch and silently produce items
   built from the object's internal components.
@@ -75,7 +75,7 @@
 * Added a cross-implementation test suite pinning `cooccurrence()` to
   `Nestimate::cooccurrence()` across all eight similarity measures, all
   five shared input formats, `min_occur`, `threshold`, `top_n`, their
-  combinations, degenerate inputs, and randomised networks. The two
+  combinations, degenerate inputs, and randomized networks. The two
   agree exactly once conventions are aligned: Nestimate stores item
   frequency on the matrix diagonal (`diagonal = TRUE`) where cooccure
   zeroes it, and Nestimate keeps every edge tied at the `top_n` cut
@@ -102,7 +102,7 @@
 * A group that fails during `split_by` now warns and names the group.
   Genuinely edgeless groups are still dropped quietly.
 * `threshold = 0` is documented as meaning no filtering rather than
-  "drop negative weights", so centring scalings such as
+  "drop negative weights", so centering scalings such as
   `scale = "zscore"` keep their negative half.
 * Bug fix: the argument order now reproduces the CRAN 0.1.1 signature
   for its first thirteen arguments, so positional calls written against
@@ -150,7 +150,7 @@
   code keeps working.
 * Added `Matrix` to `Imports`.
 * Delimited parsers (`.co_parse_delimited`, `.co_parse_multi_delimited`)
-  vectorised: `trimws()`, NA/empty filtering, and per-row deduplication
+  vectorized: `trimws()`, NA/empty filtering, and per-row deduplication
   now run as single C-level calls over the flattened token vector rather
   than as per-row R calls. Cuts overall runtime on a 166k-row x
   20-items-per-row citation corpus from ~6.2 s to ~3.4 s (~1.8x faster).

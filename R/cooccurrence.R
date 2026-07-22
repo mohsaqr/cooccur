@@ -21,7 +21,7 @@
 #'     \item A \code{list} of character vectors (each element is a transaction).
 #'     \item A \code{nestimate_data} object from
 #'       \code{Nestimate::prepare()}; its \code{sequence_data} is used, so
-#'       event logs can be sessionised there and networked here.
+#'       event logs can be sessionized there and networked here.
 #'   }
 #' @param field Character. The entity column --- determines what the nodes are.
 #'   For delimited format, a single column split by \code{sep}. For
@@ -41,10 +41,10 @@
 #' @param sep Character or \code{NULL}. Separator for splitting delimited
 #'   fields.
 #' @param action Character or \code{NULL}. Column holding the event/state
-#'   for raw event-log input. When supplied, the log is sessionised into
+#'   for raw event-log input. When supplied, the log is sessionized into
 #'   ordered sequences first and each session becomes one transaction, so
 #'   \code{window} and \code{counting = "attention"} apply. Requires the
-#'   \pkg{Nestimate} package, which performs the sessionisation.
+#'   \pkg{Nestimate} package, which performs the sessionization.
 #' @param actor Character vector or \code{NULL}. Column(s) identifying who
 #'   performed the action. When \code{NULL}, all rows are treated as one
 #'   actor. Only used with \code{action}.
@@ -128,7 +128,7 @@
 #'   Ignored for other counting methods.
 #' @param threshold Numeric. Minimum edge weight to retain, applied after
 #'   similarity and scaling. The default \code{0} means no filtering rather
-#'   than "drop negative weights", so centring scalings such as
+#'   than "drop negative weights", so centering scalings such as
 #'   \code{scale = "zscore"} keep their negative half. Pass a positive
 #'   value to filter.
 #' @param min_occur Integer. Minimum entity frequency. Entities appearing in
@@ -234,7 +234,7 @@
 #' )
 #' cooccurrence(onehot, vars = c("A", "B", "C"))
 #'
-#' # Raw event log: sessionised on a 15-minute gap, then windowed
+#' # Raw event log: sessionized on a 15-minute gap, then windowed
 #' \donttest{
 #' if (requireNamespace("Nestimate", quietly = TRUE)) {
 #'   events <- data.frame(
@@ -307,8 +307,8 @@ cooccurrence <- function(data, field = NULL, by = NULL, sep = NULL,
            "with `field`, `by`, or `sep`.", call. = FALSE)
   }
 
-  ## Raw event-log input: sessionise first, then continue down the ordinary
-  ## wide-sequence path. Sessionisation (timestamp parsing, gap splitting)
+  ## Raw event-log input: sessionize first, then continue down the ordinary
+  ## wide-sequence path. Sessionization (timestamp parsing, gap splitting)
   ## is delegated to Nestimate::prepare() rather than reimplemented here.
   if (!is.null(action)) {
     data <- .co_prepare_events(data, actor = actor, action = action,
@@ -539,7 +539,7 @@ co <- cooccurrence
 
 #' Finalize edges from sparse co-occurrence matrices.
 #'
-#' Operates on triplets throughout — never materialises a dense k x k matrix.
+#' Operates on triplets throughout — never materializes a dense k x k matrix.
 #' For symmetric similarities, the attribute `matrix` is stored as a symmetric
 #' sparse `dsCMatrix`; for `similarity = "relative"` it is a general
 #' `dgCMatrix` holding both triangles.
@@ -572,7 +572,7 @@ co <- cooccurrence
     ## [cbind(i, j)] indexing returns counts aligned with c_vals.
     raw_vals <- as.integer(C_raw[cbind(i, j)])
 
-    ## Similarity normalisation on triplets.
+    ## Similarity normalization on triplets.
     if (similarity == "none") {
       W_x <- c_vals
       W_sparse <- Matrix::sparseMatrix(
@@ -796,7 +796,7 @@ co <- cooccurrence
 
 # ---- Scaling (triplet-based) ----
 
-#' Apply a post-normalisation scaling to edge weights.
+#' Apply a post-normalization scaling to edge weights.
 #'
 #' @param vals Numeric vector to scale (the edge weights returned to the user).
 #' @param population Numeric vector of all non-zero values that would appear in
@@ -950,9 +950,9 @@ co <- cooccurrence
 #' @noRd
 .co_parse_transactions <- function(data, fmt, field, by, sep, window = NULL,
                                    vars = NULL) {
-  ## Nestimate::prepare() already produced sessionised wide sequences, so
+  ## Nestimate::prepare() already produced sessionized wide sequences, so
   ## unwrap to its $sequence_data and continue down the ordinary wide path
-  ## rather than duplicating its sessionisation here.
+  ## rather than duplicating its sessionization here.
   if (fmt == "nestimate") {
     seqs <- data$sequence_data
     if (is.null(seqs))
@@ -1049,7 +1049,7 @@ co <- cooccurrence
   n <- length(vals)
 
   ## strsplit returns a list; flatten once so `trimws` and filtering run as
-  ## vectorised C loops over the full token population rather than 166k
+  ## vectorized C loops over the full token population rather than 166k
   ## per-row R calls (that per-row path was ~48% of total runtime).
   splits <- strsplit(vals, sep, fixed = TRUE)
   lens <- lengths(splits)
@@ -1185,7 +1185,7 @@ co <- cooccurrence
 }
 
 
-#' Sessionise a raw event log into wide sequence data.
+#' Sessionize a raw event log into wide sequence data.
 #'
 #' Delegates to `Nestimate::prepare()`, which owns timestamp parsing (ISO8601,
 #' Unix, 40+ formats), tie-breaking, and gap-based session splitting. Returns
@@ -1196,7 +1196,7 @@ co <- cooccurrence
                                time_threshold) {
   if (!requireNamespace("Nestimate", quietly = TRUE))
     stop("Package 'Nestimate' is required for raw event-log input ",
-         "(`action = `). Install it, or sessionise the data yourself and ",
+         "(`action = `). Install it, or sessionize the data yourself and ",
          "pass wide sequences with `field = \"all\"`.", call. = FALSE)
   if (!is.data.frame(data))
     stop("`action` requires a data frame of event records.", call. = FALSE)
@@ -1370,9 +1370,9 @@ co <- cooccurrence
 .co_attention_pairs <- function(transactions, items, lambda = 1.0) {
   n_items <- length(items)
 
-  ## Per transaction, generate triplets via vectorised triangle-index
+  ## Per transaction, generate triplets via vectorized triangle-index
   ## construction (avoids utils::combn(), which is recursive R and
-  ## materialises a 2 x C(n,2) matrix per call).
+  ## materializes a 2 x C(n,2) matrix per call).
   triplets_list <- lapply(transactions, function(t) {
     n <- length(t)
     if (n < 2L) return(NULL)
@@ -1397,11 +1397,11 @@ co <- cooccurrence
 
 # ---- Shared sparse-matrix builder ----
 
-#' Build a symmetric sparse matrix from triplets, normalising i <= j.
+#' Build a symmetric sparse matrix from triplets, normalizing i <= j.
 #'
 #' `Matrix::sparseMatrix(symmetric = TRUE)` requires entries in one
 #' triangle. Callers that arrive with mixed i,j must swap; this helper
-#' centralises the swap and the empty-triplets shortcut so the
+#' centralizes the swap and the empty-triplets shortcut so the
 #' three places that build symmetric pair matrices
 #' (`.co_attention_pairs`, `.co_edges_to_sparse`, plus the empty
 #' fallbacks) read as one line.
