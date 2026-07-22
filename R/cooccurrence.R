@@ -677,11 +677,22 @@ co <- cooccurrence
       kj <- match(edges$to, items)
       W_sparse <- .co_sym_sparse(ki, kj, edges$weight, items)
     } else {
-      ## 'relative' is asymmetric: keep both stored directions, but only
-      ## those whose undirected pair survived filtering.
-      pair_kept <- paste(pmin(match(edges$from, items), match(edges$to, items)),
-                         pmax(match(edges$from, items), match(edges$to, items)))
-      keep_full <- paste(pmin(ii, jj), pmax(ii, jj)) %in% pair_kept
+      ## 'relative' is asymmetric, so each DIRECTION is thresholded on its
+      ## own value: W[i,j] and W[j,i] differ and one can fall below the cut
+      ## while the other survives. Filtering by the undirected pair instead
+      ## would retain a direction that is below threshold.
+      keep_full <- if (threshold > 0) W_full_x >= threshold else
+        rep(TRUE, length(W_full_x))
+      if (!is.null(top_n)) {
+        ## top_n is decided on the undirected edge list; restrict the
+        ## stored directions to pairs that survived it.
+        pair_kept <- paste(pmin(match(edges$from, items),
+                                match(edges$to, items)),
+                           pmax(match(edges$from, items),
+                                match(edges$to, items)))
+        keep_full <- keep_full &
+          paste(pmin(ii, jj), pmax(ii, jj)) %in% pair_kept
+      }
       W_sparse <- Matrix::sparseMatrix(
         i = ii[keep_full], j = jj[keep_full], x = W_full_x[keep_full],
         dims = c(n_items, n_items), dimnames = list(items, items)

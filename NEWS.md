@@ -1,4 +1,4 @@
-# cooccure 0.2.0
+# cooccure 0.3.0
 
 * `cooccurrence()` gains a `window =` parameter for sliding-window
   co-occurrence on ordered sequence input (lists of vectors and wide
@@ -69,6 +69,17 @@
   node-level metrics (`what = "nodes"`, the default) or group-level
   metrics (`what = "groups"`), so callers no longer reach into the
   summary object's internals.
+* `similarity = "relative"` is asymmetric, so each direction is now
+  thresholded on its own value. Filtering by the undirected pair could
+  retain a direction whose weight was below `threshold`.
+* Added a cross-implementation test suite pinning `cooccurrence()` to
+  `Nestimate::cooccurrence()` across all eight similarity measures, all
+  five shared input formats, `min_occur`, `threshold`, `top_n`, their
+  combinations, degenerate inputs, and randomised networks. The two
+  agree exactly once conventions are aligned: Nestimate stores item
+  frequency on the matrix diagonal (`diagonal = TRUE`) where cooccure
+  zeroes it, and Nestimate keeps every edge tied at the `top_n` cut
+  where cooccure truncates strictly at N.
 * Bug fix: `weight_by` combined with `min_occur > 1` errored with
   "'dims' must contain all (i,j) pairs". The binary companion matrix was
   built from unfiltered column indices against filtered dimensions.
