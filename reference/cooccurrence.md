@@ -90,7 +90,7 @@ co(
 
   - A `nestimate_data` object from
     [`Nestimate::prepare()`](https://saqr.me/Nestimate/reference/prepare.html);
-    its `sequence_data` is used, so event logs can be sessionised there
+    its `sequence_data` is used, so event logs can be sessionized there
     and networked here.
 
 - field:
@@ -228,7 +228,7 @@ co(
 
   Numeric. Minimum edge weight to retain, applied after similarity and
   scaling. The default `0` means no filtering rather than "drop negative
-  weights", so centring scalings such as `scale = "zscore"` keep their
+  weights", so centering scalings such as `scale = "zscore"` keep their
   negative half. Pass a positive value to filter.
 
 - min_occur:
@@ -291,10 +291,10 @@ co(
 - action:
 
   Character or `NULL`. Column holding the event/state for raw event-log
-  input. When supplied, the log is sessionised into ordered sequences
+  input. When supplied, the log is sessionized into ordered sequences
   first and each session becomes one transaction, so `window` and
   `counting = "attention"` apply. Requires the Nestimate package, which
-  performs the sessionisation.
+  performs the sessionization.
 
 - time:
 
@@ -511,7 +511,7 @@ cooccurrence(onehot, vars = c("A", "B", "C"))
 #>     A  C      1     1
 #>     B  C      1     1
 
-# Raw event log: sessionised on a 15-minute gap, then windowed
+# Raw event log: sessionized on a 15-minute gap, then windowed
 # \donttest{
 if (requireNamespace("Nestimate", quietly = TRUE)) {
   events <- data.frame(

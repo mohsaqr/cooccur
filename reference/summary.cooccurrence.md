@@ -1,4 +1,4 @@
-# Summarise a cooccurrence network
+# Summarize a cooccurrence network
 
 Node- and group-level metrics are available as tidy data frames via
 [`as.data.frame`](https://rdrr.io/r/base/as.data.frame.html).

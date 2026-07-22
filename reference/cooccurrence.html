@@ -11,7 +11,7 @@ convention."><meta property="og:image" content="https://saqr.me/cooccure/logo.pn
 
     <a class="navbar-brand me-2" href="../index.html">cooccure</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -124,7 +124,7 @@ columns; other columns (ids, metadata) are ignored.</p></li>
 <li><p>A <code>list</code> of character vectors (each element is a transaction).</p></li>
 <li><p>A <code>nestimate_data</code> object from
 <code><a href="https://saqr.me/Nestimate/reference/prepare.html" class="external-link">Nestimate::prepare()</a></code>; its <code>sequence_data</code> is used, so
-event logs can be sessionised there and networked here.</p></li>
+event logs can be sessionized there and networked here.</p></li>
 </ul></dd>
 
 
@@ -254,7 +254,7 @@ after similarity normalization:</p><dl><dt><code>NULL</code> or <code>"none"</co
 <dt id="arg-threshold">threshold<a class="anchor" aria-label="anchor" href="#arg-threshold"></a></dt>
 <dd><p>Numeric. Minimum edge weight to retain, applied after
 similarity and scaling. The default <code>0</code> means no filtering rather
-than "drop negative weights", so centring scalings such as
+than "drop negative weights", so centering scalings such as
 <code>scale = "zscore"</code> keep their negative half. Pass a positive
 value to filter.</p></dd>
 
@@ -316,10 +316,10 @@ actor. Only used with <code>action</code>.</p></dd>
 
 <dt id="arg-action">action<a class="anchor" aria-label="anchor" href="#arg-action"></a></dt>
 <dd><p>Character or <code>NULL</code>. Column holding the event/state
-for raw event-log input. When supplied, the log is sessionised into
+for raw event-log input. When supplied, the log is sessionized into
 ordered sequences first and each session becomes one transaction, so
 <code>window</code> and <code>counting = "attention"</code> apply. Requires the
-<span class="pkg">Nestimate</span> package, which performs the sessionisation.</p></dd>
+<span class="pkg">Nestimate</span> package, which performs the sessionization.</p></dd>
 
 
 <dt id="arg-time">time<a class="anchor" aria-label="anchor" href="#arg-time"></a></dt>
@@ -536,7 +536,7 @@ the American Society for Information Science and Technology</em>, 60(8),
 <span class="r-out co"><span class="r-pr">#&gt;</span>     A  C      1     1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     B  C      1     1</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Raw event log: sessionised on a 15-minute gap, then windowed</span></span></span>
+<span class="r-in"><span><span class="co"># Raw event log: sessionized on a 15-minute gap, then windowed</span></span></span>
 <span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"Nestimate"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>  <span class="va">events</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>

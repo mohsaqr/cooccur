@@ -34,4 +34,4 @@
 - [`print(`*`<summary.cooccurrence>`*`)`](https://saqr.me/cooccure/reference/print.summary.cooccurrence.md)
   : Print a cooccurrence summary
 - [`summary(`*`<cooccurrence>`*`)`](https://saqr.me/cooccure/reference/summary.cooccurrence.md)
-  : Summarise a cooccurrence network
+  : Summarize a cooccurrence network

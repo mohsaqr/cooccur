@@ -1,6 +1,6 @@
 # Changelog
 
-## cooccure 0.3.0
+## cooccure 0.4.0
 
 - [`cooccurrence()`](https://saqr.me/cooccure/reference/cooccurrence.md)
   gains a `window =` parameter for sliding-window co-occurrence on
@@ -8,7 +8,7 @@
   frames via `field = "all"`). Each window of `w` consecutive positions
   becomes one transaction; states inside the same window co-occur.
   `window = sequence_length` reduces to the existing bag-of-states
-  behaviour. TraMineR void markers (`NA`, `""`, `"%"`, `"*"`, `"NaN"`)
+  behavior. TraMineR void markers (`NA`, `""`, `"%"`, `"*"`, `"NaN"`)
   are dropped before windowing. Pure base R via
   [`embed()`](https://rdrr.io/r/stats/embed.html).
 - [`cooccurrence()`](https://saqr.me/cooccure/reference/cooccurrence.md)
@@ -41,9 +41,9 @@
 - [`cooccurrence()`](https://saqr.me/cooccure/reference/cooccurrence.md)
   accepts a raw event log directly via `action =` (the event column),
   with optional `actor =`, `time =`, `session =`, `order =`, and
-  `time_threshold =` (default 900 seconds). The log is sessionised into
+  `time_threshold =` (default 900 seconds). The log is sessionized into
   ordered sequences and each session becomes one transaction, so
-  `window =` and `counting = "attention"` apply. Sessionisation —
+  `window =` and `counting = "attention"` apply. Sessionization —
   timestamp parsing and gap splitting — is delegated to
   [`Nestimate::prepare()`](https://saqr.me/Nestimate/reference/prepare.html)
   rather than reimplemented, so `Nestimate` is required for this input
@@ -60,14 +60,14 @@
   presence, so count tables such as document-term matrices work
   alongside `0`/`1` and `TRUE`/`FALSE`.
 - Logical (`TRUE`/`FALSE`) indicator tables are now auto-detected;
-  previously only numeric `0`/`1` was recognised.
+  previously only numeric `0`/`1` was recognized.
 - `NA` in an indicator table is treated as absent. It previously reached
   [`Matrix::sparseMatrix()`](https://rdrr.io/pkg/Matrix/man/sparseMatrix.html)
   as an `NA` index and failed with an internal error.
 - [`cooccurrence()`](https://saqr.me/cooccure/reference/cooccurrence.md)
   accepts a `nestimate_data` object from
   [`Nestimate::prepare()`](https://saqr.me/Nestimate/reference/prepare.html)
-  and uses its `sequence_data`, so event logs can be sessionised by
+  and uses its `sequence_data`, so event logs can be sessionized by
   `prepare()` (time gaps, timestamp parsing) and networked here without
   duplicating that logic. Passing one used to fall into the
   list-of-transactions branch and silently produce items built from the
@@ -89,7 +89,7 @@
   [`Nestimate::cooccurrence()`](https://saqr.me/Nestimate/reference/cooccurrence.html)
   across all eight similarity measures, all five shared input formats,
   `min_occur`, `threshold`, `top_n`, their combinations, degenerate
-  inputs, and randomised networks. The two agree exactly once
+  inputs, and randomized networks. The two agree exactly once
   conventions are aligned: Nestimate stores item frequency on the matrix
   diagonal (`diagonal = TRUE`) where cooccure zeroes it, and Nestimate
   keeps every edge tied at the `top_n` cut where cooccure truncates
@@ -120,7 +120,7 @@
 - A group that fails during `split_by` now warns and names the group.
   Genuinely edgeless groups are still dropped quietly.
 - `threshold = 0` is documented as meaning no filtering rather than
-  “drop negative weights”, so centring scalings such as
+  “drop negative weights”, so centering scalings such as
   `scale = "zscore"` keep their negative half.
 - Bug fix: the argument order now reproduces the CRAN 0.1.1 signature
   for its first thirteen arguments, so positional calls written against
@@ -177,7 +177,7 @@ CRAN release: 2026-04-24
   densifies them on demand so existing downstream code keeps working.
 - Added `Matrix` to `Imports`.
 - Delimited parsers (`.co_parse_delimited`, `.co_parse_multi_delimited`)
-  vectorised: [`trimws()`](https://rdrr.io/r/base/trimws.html), NA/empty
+  vectorized: [`trimws()`](https://rdrr.io/r/base/trimws.html), NA/empty
   filtering, and per-row deduplication now run as single C-level calls
   over the flattened token vector rather than as per-row R calls. Cuts
   overall runtime on a 166k-row x 20-items-per-row citation corpus from
